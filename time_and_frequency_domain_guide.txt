@@ -1,0 +1,731 @@
+THz TIME-DOMAIN AND FREQUENCY-DOMAIN GUIDE
+===========================================
+A beginner-friendly text and visualization guide
+
+Author: Deepak Kararwal
+Repository: THz Time-Domain Explorer
+
+PURPOSE OF THIS GUIDE
+---------------------
+A terahertz time-domain spectroscopy (THz-TDS) experiment usually produces a
+waveform called E(t). At first sight, it may look like an ordinary pulse plotted
+against time. However, this waveform contains much more information than only
+"pulse strength." It records the coherent electric field, including its sign,
+arrival time, pulse shape, oscillations, phase, reflections, and noise.
+
+The same measured waveform can be converted by a Fourier transform into a
+frequency-domain spectrum. The time-domain and frequency-domain plots are not
+two unrelated measurements. They are two descriptions of the same THz signal.
+
+This guide explains both descriptions using plain language, equations, and
+text-based visualizations that can be read in any terminal or text editor.
+
+
+1. WHAT IS A TERAHERTZ PULSE?
+-----------------------------
+Terahertz radiation lies approximately between microwaves and infrared light.
+One terahertz means one trillion oscillations per second:
+
+    1 THz = 10^12 Hz
+    1 ps  = 10^-12 s
+
+Therefore, a 1 THz sinusoidal wave completes one cycle in approximately 1 ps:
+
+    Period T = 1/f
+
+    f = 1 THz  --->  T = 1 ps
+    f = 0.5 THz ---> T = 2 ps
+    f = 2 THz  --->  T = 0.5 ps
+
+A pulsed THz source normally does not generate an infinitely long sinusoidal
+wave. It produces a short transient containing a range of frequencies. A very
+short, nearly single-cycle THz pulse is therefore broadband.
+
+Text visualization of a short THz transient:
+
+ Electric
+ field E(t)
+    +
+    |                    /\
+    |                   /  \       small ringing
+  0 |------------------/----\---\_/--\_/------------------> time
+    |                _/      \_
+    |              _/
+    -
+                         main pulse
+
+The vertical axis is the instantaneous electric field. The horizontal axis is
+time, usually measured in picoseconds.
+
+
+2. WHAT DOES E(t) MEAN?
+-----------------------
+E(t) is the electric field measured as a function of time. It is a coherent
+quantity, which means that both amplitude and phase information are retained.
+
+The sign is physically meaningful:
+
+    E(t) > 0  : field points along the chosen positive detection axis
+    E(t) < 0  : field points in the opposite direction
+    E(t) = 0  : field crosses through zero at that instant
+
+A positive lobe followed by a negative lobe does not mean that the detector is
+producing "negative power." It means that the direction of the electric field
+has reversed.
+
+Simple polarity visualization:
+
+ Positive direction       Zero crossing       Negative direction
+
+        +E                      E=0                    -E
+         ^                       |                      v
+         |        /\             |             \/       |
+  -------+-------/--\------------+------------/--\------+------> time
+
+Reversing the emitter magnetization, detector axis, or electrical convention
+can invert the entire waveform. The physics is unchanged if the sign convention
+is stated consistently.
+
+
+3. HOW TO READ A TIME-DOMAIN THz WAVEFORM
+------------------------------------------
+The following features should be examined.
+
+3.1 Baseline
+~~~~~~~~~~~~
+Before and after the pulse, E(t) should fluctuate around a baseline. A constant
+vertical offset is usually a DC offset or acquisition artifact and is commonly
+removed before Fourier transformation.
+
+    clean baseline:      ----~---~------~----
+    offset baseline:     +++++~+++~++++~+++++
+
+Subtracting the mean of an appropriate pulse-free region is often preferable to
+blindly subtracting the mean of the entire trace when the time window is short.
+
+3.2 Arrival time
+~~~~~~~~~~~~~~~~
+The temporal position of the main pulse indicates when the THz field reaches
+the detector. A later pulse can indicate a longer optical path, a material with
+refractive index greater than one, waveguide dispersion, or an instrumental
+shift.
+
+ Reference:        ----/\__\/--------------------
+ Sample:           -----------/\__\/--------------
+                                <---- delay ---->
+
+Only relative arrival time is normally meaningful unless the experiment has an
+absolute time reference.
+
+3.3 Peak field
+~~~~~~~~~~~~~~
+The largest positive or negative value is the peak electric field. The largest
+absolute value is
+
+    max |E(t)|
+
+The peak-to-peak field is
+
+    E_peak-to-peak = max(E) - min(E)
+
+A large peak generally means a strong detected field, but an uncalibrated THz-TDS
+system often reports arbitrary units. Detector response, alignment, collection
+optics, and acquisition gain also affect the measured amplitude.
+
+3.4 Pulse duration
+~~~~~~~~~~~~~~~~~~
+"Pulse duration" must be defined carefully. Common choices include:
+
+    - full width at half maximum (FWHM) of E^2(t)
+    - FWHM of the pulse envelope
+    - distance between selected zero crossings
+    - duration containing a chosen fraction of the pulse energy
+
+Always state which definition is used. The FWHM of E(t) itself can be ambiguous
+for a bipolar single-cycle pulse.
+
+3.5 Number of oscillations
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+A nearly single-cycle pulse is short and broadband. A long oscillating waveform
+is more spectrally narrow or may contain resonances and ringing.
+
+ Single-cycle, broad spectrum:       Multi-cycle, narrower spectrum:
+
+        /\                                  /\/\/\/\/\
+  _____/  \____\/_____                _____/          \_____
+
+3.6 Ringing
+~~~~~~~~~~~
+Oscillations after the main pulse may originate from emitter or detector
+response, resonant samples, etalon effects, water-vapor absorption, waveguide
+modes, electronic filtering, or imperfect time-window truncation.
+
+3.7 Echoes and reflections
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+A delayed smaller copy of the pulse is often an internal reflection.
+
+ Main pulse                     Echo
+     /\__\/                       /\__\/
+ ___/      \_____________________/      \____________> time
+     |<---------- echo delay ---------->|
+
+For a round trip through a layer of thickness d and refractive index n, a common
+approximation is
+
+    echo delay = 2 n d / c
+
+when the reflection geometry truly corresponds to a double pass. Interfaces,
+oblique incidence, dispersion, and multilayer structures may require a more
+complete model.
+
+An echo delay also creates periodic fringes in the frequency spectrum. The
+approximate fringe spacing is
+
+    frequency spacing approximately 1 / echo delay
+
+For example, an echo delayed by 10 ps produces fringes separated by roughly
+0.1 THz.
+
+3.8 Noise
+~~~~~~~~~
+Random fluctuations away from the pulse estimate the time-domain noise level.
+Noise limits the usable spectral range because Fourier components with very low
+amplitude have unreliable phase.
+
+Signal-to-noise ratio should be defined explicitly. It may be based on peak
+field divided by baseline standard deviation, spectral amplitude divided by a
+spectral noise floor, or another stated convention.
+
+
+4. ELECTRIC FIELD E(t) IS NOT THE SAME AS E^2(t)
+-------------------------------------------------
+The measured coherent THz waveform is E(t). Squaring it gives a non-negative
+quantity that is useful as a relative intensity or energy-density proxy:
+
+    relative intensity proportional to E^2(t)
+
+For absolute electromagnetic intensity, impedance and calibration factors are
+also required.
+
+Electric field:
+
+ E(t)
+  +         /\
+  0 -------/--\------\_/----------------------> time
+  -
+
+Squared field:
+
+ E^2(t)
+  +         /\       /\
+  |        /  \     /  \
+  0 -------    -----    -----------------------> time
+
+Squaring removes the sign. Consequently, E^2(t) cannot show field polarity and
+does not independently preserve the complete phase information contained in
+E(t).
+
+
+5. HOW THz-TDS MEASURES THE WAVEFORM
+-------------------------------------
+A common THz-TDS system uses an ultrashort optical pulse to generate THz
+radiation and another synchronized optical pulse to sample the THz field.
+
+Conceptual arrangement:
+
+ Femtosecond laser
+        |
+        +---------------------> THz emitter ---> THz path/sample ---> detector
+        |
+        +---> optical delay stage ---> gate pulse --------------------^ 
+
+The detector measures one temporal point for each delay position. The delay
+stage is moved repeatedly to reconstruct the waveform.
+
+Point-by-point sampling visualization:
+
+ True THz field:        ___/\__\/\________________
+
+ Delay positions:       .  .  .  .  .  .  .  .  .
+ Measured samples:      o  o  o  o  o  o  o  o  o
+
+ Reconstructed trace:   ---o--o-/o\o--o\o--o--o---
+
+In a common retroreflector delay line, moving the stage by distance Delta x
+changes the optical path by 2 Delta x. The corresponding delay is
+
+    Delta t = 2 Delta x / c
+
+This factor of two applies to a double-pass geometry. A different optical layout
+may have a different distance-to-delay conversion.
+
+Example:
+
+    stage step = 10 micrometres
+    optical path change = 20 micrometres
+    time step approximately 66.7 femtoseconds
+
+
+6. SAMPLING: TIME STEP AND TIME WINDOW
+---------------------------------------
+Two acquisition settings strongly control the frequency-domain result.
+
+6.1 Time step Delta t controls the highest representable frequency
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For uniformly sampled data, the Nyquist frequency is
+
+    f_Nyquist = 1 / (2 Delta t)
+
+A smaller time step allows higher frequencies to be represented. However, the
+real usable bandwidth may be lower because of emitter, detector, optics, noise,
+and instrument-response limitations.
+
+ Coarse sampling:        .       .       .       .
+ Fine sampling:          . . . . . . . . . . . . .
+
+If the sampling interval is too large, high-frequency oscillations may appear at
+false lower frequencies. This is aliasing.
+
+6.2 Total time window controls frequency resolution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If the measured window has duration T_window, the approximate frequency-bin
+spacing is
+
+    Delta f approximately 1 / T_window
+
+Longer window ---> finer frequency resolution
+Shorter window ---> coarser frequency resolution
+
+ Example:
+
+    T_window = 100 ps  ---> Delta f approximately 0.01 THz
+    T_window = 20 ps   ---> Delta f approximately 0.05 THz
+
+A long window is especially important when resolving narrow absorption lines,
+long-lived resonances, or closely spaced spectral fringes.
+
+Time-step and window trade-off:
+
+    SMALL Delta t  --------------------------------> higher Nyquist limit
+    LONG T_window ---------------------------------> finer frequency spacing
+
+These are different requirements. Adding more points by extending the window
+improves resolution; adding more points by reducing the step improves the
+representable high-frequency range.
+
+
+7. FROM TIME DOMAIN TO FREQUENCY DOMAIN
+----------------------------------------
+The Fourier transform decomposes the measured transient into sinusoidal
+frequency components.
+
+    E_tilde(f) = integral E(t) exp(-i 2 pi f t) dt
+
+The result is complex:
+
+    E_tilde(f) = real part + i imaginary part
+
+From it, we obtain
+
+    spectral amplitude = |E_tilde(f)|
+    spectral phase     = arg[E_tilde(f)]
+
+Text visualization of the idea:
+
+ TIME DOMAIN                         FOURIER TRANSFORM       FREQUENCY DOMAIN
+
+ short transient E(t)                       FFT             amplitude and phase
+
+       /\                                                     /\
+ _____/  \__\/_____        ---------------------------->    /  \____
+                                                          0  0.5 1.0 1.5 2.0 THz
+
+The Fourier transform does not create new physical information. It reorganizes
+the information already contained in E(t).
+
+
+8. HOW TO READ A FREQUENCY-DOMAIN SPECTRUM
+-------------------------------------------
+A useful THz frequency-domain analysis normally includes both amplitude and
+phase.
+
+8.1 Spectral amplitude
+~~~~~~~~~~~~~~~~~~~~~~
+The amplitude spectrum shows how strongly each frequency contributes.
+
+ Normalized
+ amplitude
+   1.0               /\
+                    /  \
+   0.5             /    \____
+                  /
+   0.0 __________/____________________________> frequency
+              0.1  0.5  1.0  1.5  2.0 THz
+
+Important features include:
+
+    - spectral peak: frequency with maximum amplitude
+    - bandwidth: frequency interval above a stated threshold
+    - absorption dip: reduced transmitted amplitude near a resonance
+    - resonant peak: enhanced response at a mode or material resonance
+    - fringes: periodic modulation caused by delayed replicas or etalons
+    - noise floor: region where the spectrum is no longer reliable
+
+Bandwidth must be defined. Common definitions include -3 dB amplitude bandwidth,
+-6 dB bandwidth, full width at half maximum, or a usable signal-to-noise range.
+
+Be careful: -3 dB corresponds to different numerical ratios depending on whether
+one plots field amplitude or power. State the convention.
+
+8.2 Spectral phase
+~~~~~~~~~~~~~~~~~~
+The phase spectrum records the relative phase of each frequency component. A
+pure temporal delay creates an approximately linear phase slope.
+
+ phase
+   +                         /
+   |                       /
+   |                     /
+   0 ------------------/-----------------------> frequency
+   |                /
+   -              /
+
+The displayed phase may wrap by 2 pi, producing jumps. Phase unwrapping removes
+these artificial 2 pi discontinuities when the signal-to-noise ratio is adequate.
+
+Phase is unreliable where the spectral amplitude is close to zero or below the
+noise floor.
+
+8.3 Group delay
+~~~~~~~~~~~~~~~
+Group delay describes how the spectral phase changes with angular frequency.
+For the Fourier convention used in this guide,
+
+    group delay tau_g = -d phi / d omega
+
+where omega = 2 pi f. Different Fourier sign conventions can reverse the sign,
+so the convention should always be stated.
+
+A constant group delay means all frequencies are shifted similarly in time.
+Frequency-dependent group delay indicates dispersion.
+
+8.4 Broadband versus narrowband signals
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Short time pulse                          Broad spectrum
+
+       /\                                      /-------\
+ _____/  \_____               <---->         /         \____
+
+ Long oscillation                          Narrow spectrum
+
+ ___/\/\/\/\/\/\___          <---->             /\
+                                                  \
+
+This is a general time-frequency relationship: strong temporal localization
+requires a range of frequencies.
+
+
+9. CHIRP AND DISPERSION
+-----------------------
+A chirped pulse has a frequency that changes across time. In one pulse, lower
+frequencies may arrive earlier and higher frequencies later, or vice versa.
+
+ Unchirped:          /\/\/\/\       nearly uniform cycle spacing
+
+ Chirped:            /\/\ /\  /\    changing cycle spacing
+
+Material dispersion, waveguide dispersion, and optical components can reshape
+and chirp a THz pulse. Chirp often broadens the time-domain waveform even when
+the spectral amplitude remains similar, because the frequency components are no
+longer synchronized in phase.
+
+A time-domain trace alone can suggest chirp, but quantitative analysis normally
+uses spectral phase, group delay, or a time-frequency method such as the
+short-time Fourier transform.
+
+
+10. REFERENCE AND SAMPLE MEASUREMENTS
+--------------------------------------
+In spectroscopy, a reference waveform and a sample waveform are measured:
+
+    E_ref(t)     : propagation without the sample, or through a reference path
+    E_sample(t)  : propagation through or reflected from the sample
+
+After Fourier transformation:
+
+    E_ref(f) and E_sample(f)
+
+A complex transfer function can be formed:
+
+    H(f) = E_sample(f) / E_ref(f)
+
+Its magnitude contains frequency-dependent transmission information, while its
+phase contains phase delay information. With an appropriate physical model,
+sample thickness, and interface corrections, one can extract quantities such as
+refractive index, absorption coefficient, conductivity, and dielectric response.
+
+Do not divide by the reference where its amplitude is near the noise floor. The
+ratio can become numerically unstable and produce false features.
+
+
+11. TIME WINDOWING AND ZERO PADDING
+------------------------------------
+11.1 Windowing
+~~~~~~~~~~~~~~
+A finite measurement window abruptly cuts the waveform. If the signal has not
+returned to the baseline at the boundaries, the Fourier spectrum can develop
+spectral leakage and oscillatory artifacts.
+
+ Abrupt truncation:
+
+ true signal:       ____/\__\/\___\/\___\/\___...
+ recorded window:   |___/\__\/\___\/\__|
+                    ^                   ^ sudden edges
+
+A smooth numerical window can reduce edge discontinuities, but it also changes
+spectral amplitude and resolution. The selected window and parameters should be
+reported.
+
+11.2 Zero padding
+~~~~~~~~~~~~~~~~~
+Adding zeros after the measured data produces a smoother-looking frequency grid,
+but it does not create new experimental information and does not improve the
+fundamental spectral resolution set by the measured time window.
+
+    measured points + zeros ---> denser interpolated FFT display
+    measured time window     ---> actual resolving capability
+
+
+12. COMMON FEATURES AND THEIR LIKELY INTERPRETATIONS
+-----------------------------------------------------
+Observed feature                    Possible interpretation
+----------------                    -----------------------
+Main pulse shifts later             Additional optical delay or larger index
+Main pulse becomes broader          Dispersion, filtering, or multiple modes
+Peak amplitude decreases            Loss, poor coupling, absorption, misalignment
+Late weak pulse                     Internal reflection or secondary path
+Long oscillatory tail               Resonance, water vapor, detector ringing, mode
+Periodic spectral fringes           Delayed time-domain echo or etalon
+Spectral dip                        Absorption line, cutoff, destructive interference
+Rapid phase variation               Dispersion, resonance, multimode interference
+Noisy phase                         Spectral amplitude near the noise floor
+Inverted waveform                   Reversed field/detection sign convention
+DC offset                           Detector/electronic baseline artifact
+
+These are diagnostic clues, not unique proofs. Experimental geometry and control
+measurements are needed before assigning a physical origin.
+
+
+13. COMMON MISTAKES TO AVOID
+-----------------------------
+1. Calling E(t) an intensity waveform.
+   THz-TDS normally measures the coherent electric field. E^2(t) is a derived
+   non-negative quantity.
+
+2. Ignoring the sign of the waveform.
+   Positive and negative lobes contain polarity and phase information.
+
+3. Reporting a pulse width without defining it.
+   Specify whether it is the FWHM of E^2(t), the envelope, or another quantity.
+
+4. Treating the FFT amplitude as the complete spectrum.
+   A coherent spectrum includes both amplitude and phase.
+
+5. Trusting phase where amplitude is at the noise floor.
+   Phase becomes unstable in low-SNR regions.
+
+6. Assuming zero padding improves true resolution.
+   Resolution is controlled mainly by the measured time window.
+
+7. Confusing sampling interval with spectral resolution.
+   Delta t controls the Nyquist limit; T_window controls frequency spacing.
+
+8. Comparing sample and reference traces with inconsistent time windows or
+   preprocessing.
+
+9. Removing echoes without checking whether they contain relevant sample or
+   waveguide information.
+
+10. Interpreting every oscillation as a material resonance.
+    Instrument response, atmospheric absorption, reflections, and numerical
+    processing can also produce oscillations.
+
+
+14. HOW THE LIVE SIMULATOR MAPS TO THE PHYSICS
+----------------------------------------------
+The repository's browser simulator includes the following controls:
+
+Pulse model
+    Selects a nearly single-cycle transient or a Gaussian-envelope carrier.
+
+Pulse duration
+    Changes temporal localization. A shorter pulse generally produces a broader
+    spectrum.
+
+Characteristic/carrier frequency
+    Changes the oscillation period and moves the spectral content.
+
+Chirp
+    Changes how the instantaneous frequency evolves across the pulse.
+
+Reflection amplitude
+    Controls the strength of a delayed echo.
+
+Reflection delay
+    Changes the echo position and therefore the spacing of spectral fringes.
+
+Noise level
+    Adds random fluctuations and demonstrates why weak spectral components and
+    phase become unreliable.
+
+Scan pulse
+    Animates point-by-point temporal sampling, similar to changing the optical
+    delay in a THz-TDS experiment.
+
+The simulation is educational. A real waveform also depends on the source,
+detector, optical elements, atmospheric path, sample, polarization, alignment,
+and complete instrument transfer function.
+
+
+15. A STEP-BY-STEP WORKFLOW FOR ANALYZING REAL DATA
+----------------------------------------------------
+Step 1: Inspect the raw time trace.
+        Check the baseline, saturation, pulse position, echoes, and total window.
+
+Step 2: Confirm the time calibration.
+        Verify stage-step conversion, units, and any double-pass factor.
+
+Step 3: Apply justified preprocessing.
+        Examples are baseline correction, time alignment, and a documented
+        window. Avoid excessive filtering.
+
+Step 4: Estimate time-domain noise.
+        Use a pulse-free region and report the chosen definition.
+
+Step 5: Fourier transform the reference and sample using identical settings.
+
+Step 6: Inspect spectral amplitude and define the usable SNR range.
+
+Step 7: Inspect and unwrap phase only in the reliable amplitude region.
+
+Step 8: Compare sample and reference through a complex transfer function.
+
+Step 9: Identify echoes, fringes, resonances, and dispersive delays.
+
+Step 10: Apply a physical model and report all assumptions.
+
+
+16. QUICK READING CHECKLIST
+----------------------------
+When looking at a THz time-domain figure, ask:
+
+    [ ] What is plotted: E(t), |E(t)|, E^2(t), or normalized amplitude?
+    [ ] What are the time units and field units?
+    [ ] Where is the baseline and how was it corrected?
+    [ ] What is the pulse arrival time?
+    [ ] What is the peak and peak-to-peak field?
+    [ ] How is pulse duration defined?
+    [ ] Are there echoes or ringing?
+    [ ] What is the time step and total time window?
+
+When looking at a THz frequency-domain figure, ask:
+
+    [ ] Is the curve field amplitude, power, transmission, or absorbance?
+    [ ] Is it linear, logarithmic, normalized, or in decibels?
+    [ ] What is the spectral resolution?
+    [ ] What is the usable signal-to-noise bandwidth?
+    [ ] Is phase shown and has it been unwrapped?
+    [ ] Are low-amplitude phase regions excluded?
+    [ ] Could dips or fringes come from reflections or water vapor?
+    [ ] Were reference and sample processed identically?
+
+
+17. COMPACT SUMMARY VISUALIZATION
+---------------------------------
+
+      EXPERIMENTAL SAMPLING
+
+ Laser ---> THz pulse ---> sample ---> detector
+   \                                  ^
+    \---- delay stage ---> gate pulse-|
+
+                     one delay = one E-field sample
+                                  |
+                                  v
+
+      TIME DOMAIN E(t)                           FREQUENCY DOMAIN E(f)
+
+ Electric field vs time                         Amplitude + phase vs frequency
+
+       /\                                              /\
+ _____/  \__\/_________        Fourier FFT          /  \____
+        |       |          <-------------------->   0.1  1.0  2.0 THz
+        |       |
+  arrival   polarity/shape
+
+ Time-domain questions:                         Frequency-domain questions:
+ - When does it arrive?                         - Which frequencies are present?
+ - How strong is it?                            - What is the bandwidth?
+ - What is its polarity?                        - Are there resonances or dips?
+ - Is it broadened or chirped?                   - What is the spectral phase?
+ - Are there echoes?                            - Is there dispersion/group delay?
+
+                 BOTH ARE DESCRIPTIONS OF THE SAME COHERENT SIGNAL
+
+
+18. GLOSSARY
+------------
+Amplitude
+    Size of the electric field or spectral component.
+
+Bandwidth
+    Frequency range satisfying a stated amplitude, power, or SNR criterion.
+
+Chirp
+    Variation of instantaneous frequency across the pulse.
+
+Coherent detection
+    Measurement that preserves electric-field amplitude and phase.
+
+Dispersion
+    Frequency-dependent propagation velocity or phase delay.
+
+Echo
+    Delayed replica of a pulse, commonly caused by reflection.
+
+FFT
+    Fast Fourier transform, an efficient numerical Fourier-transform algorithm.
+
+Frequency resolution
+    Ability to distinguish nearby frequencies; approximately 1/T_window.
+
+Group delay
+    Frequency derivative of spectral phase, with sign depending on convention.
+
+Nyquist frequency
+    Highest frequency represented without aliasing for ideal uniform sampling;
+    1/(2 Delta t).
+
+Phase
+    Relative timing of a sinusoidal frequency component.
+
+Single-cycle pulse
+    A transient containing roughly one dominant oscillation and broad bandwidth.
+
+THz-TDS
+    Terahertz time-domain spectroscopy.
+
+Time zero
+    Chosen temporal reference, often based on pulse arrival or experimental
+    calibration; it is not automatically an absolute physical origin.
+
+
+FINAL IDEA
+----------
+A THz time-domain waveform is a coherent record of the electric field. Its
+amplitude, sign, arrival time, width, oscillations, echoes, and noise all carry
+physical information. The Fourier transform reorganizes that same waveform into
+frequency-dependent amplitude and phase. Understanding both representations—and
+the sampling limits connecting them—is the foundation of reliable THz-TDS
+analysis.

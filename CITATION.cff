@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this educational simulation, please cite it using the metadata below."
+title: "THz Time-Domain Pulse Explorer"
+type: software
+authors:
+  - family-names: Kararwal
+    given-names: Deepak
+abstract: "An interactive browser simulation explaining the temporal, electric-field, and spectral information contained in a time-domain terahertz pulse."
+keywords:
+  - terahertz
+  - THz-TDS
+  - time-domain spectroscopy
+  - optics
+  - Fourier transform
+license: MIT
+version: 1.0.0
+date-released: 2026-07-20
+repository-code: "https://github.com/Kararwaldeepak/thz-time-domain-pulse"
+url: "https://kararwaldeepak.github.io/thz-time-domain-pulse/"
