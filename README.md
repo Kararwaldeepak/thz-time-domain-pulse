@@ -6,6 +6,16 @@ A self-contained, interactive introduction to the information contained in a ter
 
 https://kararwaldeepak.github.io/thz-time-domain-pulse/
 
+## Read the complete guide online
+
+The full beginner-friendly guide is available as a normal webpage:
+
+https://kararwaldeepak.github.io/thz-time-domain-pulse/guide.html
+
+No file download is required. Readers can move through the table of contents and view all equations and text visualizations directly in their browser.
+
+The same guide is also available as GitHub-rendered Markdown: [`time_and_frequency_domain_guide.md`](time_and_frequency_domain_guide.md).
+
 ## What readers can explore
 
 - The measured THz electric field, `E(t)`
@@ -18,29 +28,24 @@ https://kararwaldeepak.github.io/thz-time-domain-pulse/
 - Noise and signal quality
 - Point-by-point sampling in THz time-domain spectroscopy
 - Fourier-transform amplitude spectrum
-- Spectral bandwidth and peak frequency
-- Time-window, sampling-step, Nyquist-frequency, and resolution concepts
+- Spectral bandwidth, phase, and group delay
+- Time window, sampling step, Nyquist frequency, and spectral resolution
 
 ## Repository structure
 
 ```text
 thz-time-domain-pulse/
 ├── index.html
+├── guide.html
+├── time_and_frequency_domain_guide.md
 ├── README.md
 ├── theory.md
-├── time_and_frequency_domain_guide.txt
 ├── CITATION.cff
 ├── LICENSE
 └── .nojekyll
 ```
 
-`index.html` contains all HTML, CSS, and JavaScript required by the live simulation. No external library, build system, or separate JavaScript file is needed.
-
-## Detailed guide
-
-Read [`time_and_frequency_domain_guide.txt`](time_and_frequency_domain_guide.txt) for a detailed beginner-friendly explanation of the time and frequency domains, including ASCII visualizations, practical interpretation, common mistakes, and a glossary.
-
-Read [`theory.md`](theory.md) for shorter theoretical notes.
+`index.html` contains the interactive simulation. `guide.html` contains the complete readable online chapter. No external library or build system is needed.
 
 ## Run locally
 
@@ -60,16 +65,6 @@ In this repository, open **Settings → Pages** and use:
 Source: Deploy from a branch
 Branch: main
 Folder: / (root)
-```
-
-## Important upload rule
-
-Upload the extracted files themselves. Do not upload the ZIP file, and do not paste the contents of one file into another file.
-
-The first line of `index.html` must be:
-
-```html
-<!DOCTYPE html>
 ```
 
 ## Author
