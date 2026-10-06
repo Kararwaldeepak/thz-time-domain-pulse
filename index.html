@@ -1,2728 +1,767 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="An interactive introduction to time-domain terahertz pulses and THz time-domain spectroscopy." />
-  <meta name="author" content="Deepak Kararwal" />
-  <title>THz Time-Domain Explorer</title>
 
-  <style>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>THz Time Delay and FFT Phase</title>
+
+<style>
+
 :root {
   --bg: #07111f;
-  --surface: #0e1c2e;
-  --surface-2: #13253b;
+  --panel: #102033;
   --text: #eaf2ff;
   --muted: #9eb1c9;
   --line: rgba(255,255,255,0.12);
   --accent: #63d3ff;
-  --accent-2: #9f86ff;
+  --phase: #9f86ff;
   --warm: #ffbd6b;
-  --danger: #ff7a90;
-  --shadow: 0 24px 70px rgba(0,0,0,0.28);
-  --radius: 22px;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   margin: 0;
-  color: var(--text);
   background: var(--bg);
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  line-height: 1.6;
+  color: var(--text);
+  font-family: Arial, sans-serif;
   font-size: 18px;
 }
 
-a {
-  color: inherit;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
 .container {
-  width: min(1180px, calc(100% - 36px));
-  margin: 0 auto;
+  width: min(1250px, calc(100% - 40px));
+  margin: auto;
+  padding: 45px 0;
 }
 
-
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hero {
-  min-height: 86vh;
-  background:
-    radial-gradient(
-      circle at 74% 30%,
-      rgba(99,211,255,0.18),
-      transparent 27%
-    ),
-    radial-gradient(
-      circle at 22% 18%,
-      rgba(159,134,255,0.16),
-      transparent 25%
-    ),
-    linear-gradient(
-      145deg,
-      #07111f 0%,
-      #0b1729 54%,
-      #081321 100%
-    );
-
-  border-bottom: 1px solid var(--line);
+h1 {
+  font-size: 2.7rem;
+  margin-bottom: 10px;
 }
 
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 0;
-}
-
-.brand {
-  text-decoration: none;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.nav-links {
-  display: flex;
-  gap: 24px;
-}
-
-.nav-links a {
+.subtitle {
   color: var(--muted);
-  text-decoration: none;
-  font-size: 3rem;
-}
-
-.nav-links a:hover {
-  color: var(--text);
-}
-
-.hero-content {
-  padding: 110px 0 100px;
-  max-width: 1180px;
-}
-
-.hero-content h1 {
+  line-height: 1.6;
   max-width: 900px;
-
-  font-size:
-    clamp(
-      3rem,
-      7vw,
-      6.4rem
-    );
-
-  line-height: 0.98;
-  letter-spacing: -0.055em;
-
-  margin:
-    12px
-    0
-    28px;
+  margin-bottom: 35px;
 }
 
-.eyebrow {
-  color: var(--accent);
-
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-
-  font-size: 2rem;
-}
-
-.lead {
-  max-width: 780px;
-
-  color: var(--muted);
-
-  font-size:
-    clamp(
-      2rem,
-      2vw,
-      1.4rem
-    );
-}
-
-.hero-actions {
-  display: flex;
-  gap: 14px;
-
-  margin:
-    34px
-    0
-    42px;
-
-  flex-wrap: wrap;
-}
-
-.button {
-  display: inline-flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius: 999px;
-
-  padding:
-    12px
-    20px;
-
-  text-decoration: none;
-
-  cursor: pointer;
-
-  transition:
-    0.2s
-    ease;
-
-  font-size: 1rem;
-}
-
-.button.primary {
-  background:
-    linear-gradient(
-      135deg,
-      var(--accent),
-      #8ae7ff
-    );
-
-  color: #06101c;
-
-  border-color:
-    transparent;
-
-  font-weight:
-    800;
-}
-
-.button.secondary {
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.04
-    );
-
-  color:
-    var(--text);
-}
-
-.button:hover {
-  transform:
-    translateY(-1px);
-}
-
-.concept-strip {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.concept-strip span {
-  padding:
-    8px
-    12px;
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    999px;
-
-  color:
-    var(--muted);
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.03
-    );
-
-  font-size:
-    0.95rem;
-}
-
-
-/* =========================================================
-   GENERAL SECTIONS
-   ========================================================= */
-
-.section {
-  padding:
-    100px
-    0;
-}
-
-.section-alt {
-  background:
-    #0a1626;
-
-  border-top:
-    1px
-    solid
-    var(--line);
-
-  border-bottom:
-    1px
-    solid
-    var(--line);
-}
-
-.section-heading {
-  margin-bottom:
-    42px;
-}
-
-.section-heading.narrow {
-  max-width:
-    760px;
-}
-
-.section-heading h2,
-.takeaway h2 {
-  font-size:
-    clamp(
-      2.2rem,
-      4vw,
-      4rem
-    );
-
-  line-height:
-    1.05;
-
-  letter-spacing:
-    -0.045em;
-
-  margin:
-    8px
-    0
-    18px;
-}
-
-.section-heading p,
-.takeaway p {
-  color:
-    var(--muted);
-
-  font-size:
-    1.12rem;
+.layout {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 24px;
+  align-items: start;
 }
 
 .panel {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(19,37,59,0.96),
-      rgba(12,26,43,0.96)
-    );
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    var(--radius);
-
-  box-shadow:
-    var(--shadow);
-}
-
-
-/* =========================================================
-   SIMULATOR
-   ========================================================= */
-
-.sim-layout {
-  display:
-    grid;
-
-  grid-template-columns:
-    310px
-    1fr;
-
-  gap:
-    22px;
-
-  align-items:
-    start;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
 }
 
 .controls {
-  padding:
-    22px;
-
-  position:
-    sticky;
-
-  top:
-    18px;
-
-  font-size:
-    1.06rem;
+  position: sticky;
+  top: 20px;
 }
 
 .control-group {
-  margin-bottom:
-    20px;
-}
-
-.control-group label {
-  font-weight:
-    700;
-
-  font-size:
-    1.02rem;
+  margin-bottom: 24px;
 }
 
 .label-row {
-  display:
-    flex;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
 
-  justify-content:
-    space-between;
-
-  gap:
-    12px;
-
-  align-items:
-    baseline;
+label {
+  font-size: 1.05rem;
+  font-weight: bold;
 }
 
 output {
-  color:
-    var(--accent);
-
-  font-variant-numeric:
-    tabular-nums;
-
-  font-size:
-    1rem;
-
-  font-weight:
-    700;
-}
-
-select {
-  width:
-    100%;
-
-  margin-top:
-    8px;
-
-  background:
-    #0a1728;
-
-  color:
-    var(--text);
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    12px;
-
-  padding:
-    10px;
+  color: var(--accent);
+  font-weight: bold;
 }
 
 input[type="range"] {
-  width:
-    100%;
-
-  accent-color:
-    var(--accent);
+  width: 100%;
+  margin-top: 10px;
+  accent-color: var(--accent);
 }
 
 small {
-  color:
-    var(--muted);
-
-  display:
-    block;
-
-  margin-top:
-    4px;
-
-  line-height:
-    1.35;
-
-  font-size:
-    0.94rem;
+  display: block;
+  color: var(--muted);
+  margin-top: 5px;
+  line-height: 1.4;
 }
 
-.control-actions {
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    1fr;
-
-  gap:
-    10px;
+.delay-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 7px;
+  margin-top: 10px;
 }
 
-.delay-actions {
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    1fr
-    1fr;
-
-  gap:
-    8px;
-
-  margin-top:
-    10px;
+button {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
 }
 
-.delay-actions button {
-  padding:
-    9px
-    8px;
-
-  font-size:
-    0.9rem;
+button:hover {
+  background: rgba(255,255,255,0.10);
 }
 
-
-/* =========================================================
-   PLOTS
-   ========================================================= */
-
-.plots {
-  min-width:
-    0;
+.reset-button {
+  width: 100%;
+  margin-top: 5px;
 }
 
 .plot-card {
-  padding:
-    22px;
-
-  margin-bottom:
-    22px;
+  margin-bottom: 24px;
 }
 
-.plot-card h3 {
-  margin:
-    0
-    0
-    2px;
-
-  font-size:
-    1.35rem;
+.plot-card h2 {
+  font-size: 1.4rem;
+  margin-top: 0;
+  margin-bottom: 5px;
 }
 
 .plot-card p {
-  margin:
-    0
-    0
-    16px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    1.02rem;
-}
-
-.plot-title-row {
-  display:
-    flex;
-
-  justify-content:
-    space-between;
-
-  gap:
-    20px;
-
-  align-items:
-    start;
-}
-
-.status-pill {
-  color:
-    var(--accent);
-
-  border:
-    1px
-    solid
-    rgba(
-      99,
-      211,
-      255,
-      0.25
-    );
-
-  background:
-    rgba(
-      99,
-      211,
-      255,
-      0.08
-    );
-
-  padding:
-    6px
-    10px;
-
-  border-radius:
-    999px;
-
-  white-space:
-    nowrap;
-
-  font-size:
-    0.94rem;
+  color: var(--muted);
+  margin-top: 0;
+  font-size: 1rem;
 }
 
 canvas {
-  width:
-    100%;
-
-  height:
-    auto;
-
-  display:
-    block;
-
-  border-radius:
-    14px;
-
-  background:
-    #081524;
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #081524;
+  border-radius: 12px;
 }
 
-.plot-grid {
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    1fr;
-
-  gap:
-    22px;
+.frequency-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
-.legend {
-  display:
-    flex;
-
-  gap:
-    18px;
-
-  flex-wrap:
-    wrap;
-
-  color:
-    var(--muted);
-
-  font-size:
-    0.92rem;
-
-  margin-top:
-    12px;
+.phase-info {
+  color: var(--muted);
+  margin-top: 12px;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
-.legend-line {
-  display:
-    inline-block;
-
-  width:
-    22px;
-
-  height:
-    2px;
-
-  margin-right:
-    6px;
-
-  vertical-align:
-    middle;
+.phase-info strong {
+  color: var(--warm);
 }
-
-.legend-line.field {
-  background:
-    var(--accent);
-}
-
-.legend-line.envelope {
-  background:
-    var(--accent-2);
-}
-
-.legend-line.scan {
-  background:
-    var(--warm);
-}
-
-.phase-note {
-  margin-top:
-    12px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    1rem;
-}
-
-.phase-note strong {
-  color:
-    var(--warm);
-}
-
-
-/* =========================================================
-   METRICS
-   ========================================================= */
 
 .metrics {
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      5,
-      1fr
-    );
-
-  gap:
-    12px;
-
-  margin-top:
-    22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 25px;
 }
 
-.metrics article {
-  border:
-    1px
-    solid
-    var(--line);
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.03
-    );
-
-  border-radius:
-    16px;
-
-  padding:
-    18px;
+.metric {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
 }
 
-.metrics span {
-  display:
-    block;
-
-  color:
-    var(--muted);
-
-  font-size:
-    0.92rem;
+.metric span {
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
 }
 
-.metrics strong {
-  display:
-    block;
-
-  font-size:
-    1.28rem;
-
-  margin-top:
-    5px;
+.metric strong {
+  font-size: 1.2rem;
 }
 
+@media (max-width: 950px) {
 
-/* =========================================================
-   INFORMATION CARDS
-   ========================================================= */
-
-.cards.four {
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      1fr
-    );
-
-  gap:
-    16px;
-}
-
-.info-card {
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.035
-    );
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    18px;
-
-  padding:
-    24px;
-}
-
-.info-card .number {
-  color:
-    var(--accent);
-
-  font-weight:
-    900;
-
-  font-size:
-    0.8rem;
-
-  letter-spacing:
-    0.12em;
-}
-
-.info-card h3 {
-  margin:
-    18px
-    0
-    8px;
-}
-
-.info-card p {
-  color:
-    var(--muted);
-
-  margin:
-    0;
-}
-
-
-/* =========================================================
-   COMPARISON
-   ========================================================= */
-
-.comparison {
-  margin-top:
-    34px;
-
-  padding:
-    28px;
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    1.5fr;
-
-  gap:
-    30px;
-
-  align-items:
-    center;
-}
-
-.comparison h3 {
-  font-size:
-    1.8rem;
-
-  margin:
-    6px
-    0;
-}
-
-.comparison-grid {
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    1fr;
-
-  gap:
-    16px;
-}
-
-.comparison-grid div {
-  padding:
-    18px;
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    16px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.025
-    );
-}
-
-.comparison-grid h4 {
-  margin:
-    0
-    0
-    6px;
-}
-
-.comparison-grid p {
-  margin:
-    0;
-
-  color:
-    var(--muted);
-}
-
-
-/* =========================================================
-   TIMELINE
-   ========================================================= */
-
-.timeline {
-  display:
-    grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      1fr
-    );
-
-  gap:
-    16px;
-}
-
-.timeline article {
-  border-top:
-    1px
-    solid
-    var(--line);
-
-  padding-top:
-    18px;
-
-  display:
-    flex;
-
-  gap:
-    14px;
-}
-
-.timeline article > span {
-  flex:
-    0
-    0
-    34px;
-
-  width:
-    34px;
-
-  height:
-    34px;
-
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  border-radius:
-    50%;
-
-  background:
-    var(--accent);
-
-  color:
-    #06101c;
-
-  font-weight:
-    900;
-}
-
-.timeline h3 {
-  margin:
-    0
-    0
-    6px;
-}
-
-.timeline p {
-  margin:
-    0;
-
-  color:
-    var(--muted);
-}
-
-
-/* =========================================================
-   EQUATION
-   ========================================================= */
-
-.equation {
-  margin-top:
-    46px;
-
-  padding:
-    32px;
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1.2fr
-    1fr
-    1.3fr;
-
-  gap:
-    30px;
-
-  align-items:
-    center;
-}
-
-.equation h3 {
-  margin:
-    8px
-    0
-    0;
-
-  font-size:
-    1.6rem;
-}
-
-.formula {
-  font-family:
-    Georgia,
-    serif;
-
-  font-size:
-    clamp(
-      1.4rem,
-      3vw,
-      2.3rem
-    );
-
-  text-align:
-    center;
-
-  color:
-    var(--warm);
-}
-
-.equation > p:last-child {
-  color:
-    var(--muted);
-}
-
-
-/* =========================================================
-   GUIDE
-   ========================================================= */
-
-.text-guide {
-  padding:
-    26px;
-}
-
-.text-guide pre {
-  margin:
-    0;
-
-  padding:
-    24px;
-
-  overflow-x:
-    auto;
-
-  border:
-    1px
-    solid
-    var(--line);
-
-  border-radius:
-    16px;
-
-  background:
-    #071321;
-
-  color:
-    #dbe9f6;
-
-  font:
-    0.9rem/1.55
-    "Cascadia Code",
-    "SFMono-Regular",
-    Consolas,
-    "Liberation Mono",
-    monospace;
-
-  white-space:
-    pre;
-}
-
-.guide-actions {
-  display:
-    flex;
-
-  gap:
-    12px;
-
-  flex-wrap:
-    wrap;
-
-  margin-top:
-    20px;
-}
-
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.takeaway {
-  text-align:
-    center;
-
-  max-width:
-    860px;
-}
-
-.takeaway .button {
-  margin-top:
-    18px;
-}
-
-footer {
-  padding:
-    26px
-    0;
-}
-
-.footer-content {
-  display:
-    flex;
-
-  justify-content:
-    space-between;
-
-  gap:
-    20px;
-
-  color:
-    var(--muted);
-
-  font-size:
-    0.95rem;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 1000px) {
-
-  .sim-layout {
-    grid-template-columns:
-      1fr;
+  .layout {
+    grid-template-columns: 1fr;
   }
 
   .controls {
-    position:
-      static;
+    position: static;
+  }
+
+  .frequency-grid {
+    grid-template-columns: 1fr;
   }
 
   .metrics {
-    grid-template-columns:
-      repeat(
-        3,
-        1fr
-      );
+    grid-template-columns: 1fr 1fr;
   }
 
-  .cards.four,
-  .timeline {
-    grid-template-columns:
-      repeat(
-        2,
-        1fr
-      );
-  }
-
-  .comparison,
-  .equation {
-    grid-template-columns:
-      1fr;
-  }
 }
 
+</style>
 
-@media (max-width: 700px) {
-
-  .nav-links {
-    display:
-      none;
-  }
-
-  .hero-content {
-    padding:
-      76px
-      0
-      72px;
-  }
-
-  .plot-grid,
-  .comparison-grid {
-    grid-template-columns:
-      1fr;
-  }
-
-  .metrics {
-    grid-template-columns:
-      1fr
-      1fr;
-  }
-
-  .cards.four,
-  .timeline {
-    grid-template-columns:
-      1fr;
-  }
-
-  .footer-content {
-    flex-direction:
-      column;
-  }
-}
-
-  </style>
 </head>
 
 
 <body>
 
-  <header class="hero">
+<div class="container">
 
-    <nav class="nav container">
+<h1>THz Time Delay and FFT Phase</h1>
 
-      <a
-        class="brand"
-        href="#top"
-      >
-        THz Time-Domain Explorer
-      </a>
+<p class="subtitle">
+Move the THz pulse in time and observe how the spectral phase slope changes.
+The FFT amplitude and unwrapped phase are calculated directly from the
+time-domain electric field. Reflection amplitude and delay can also be varied.
+</p>
 
-      <div class="nav-links">
 
-        <a href="#simulator">
-          Simulation
-        </a>
+<div class="layout">
 
-        <a href="#meaning">
-          Interpretation
-        </a>
 
-        <a href="#experiment">
-          THz-TDS
-        </a>
+<!-- ===================================================== -->
+<!-- CONTROLS -->
+<!-- ===================================================== -->
 
-        <a href="guide.html">
-          Complete guide
-        </a>
+<div class="panel controls">
 
-        <a href="theory.md">
-          Theory notes
-        </a>
 
-      </div>
+<div class="control-group">
 
-    </nav>
+<div class="label-row">
 
+<label for="duration">
+Pulse duration
+</label>
 
-    <div
-      id="top"
-      class="hero-content container"
-    >
+<output id="durationValue"></output>
 
-      <p class="eyebrow">
-        Interactive learning tool
-      </p>
+</div>
 
-      <h1>
-        See what a time-domain THz pulse actually means.
-      </h1>
+<input
+id="duration"
+type="range"
+min="0.20"
+max="2.00"
+value="0.70"
+step="0.05"
+>
 
-      <p class="lead">
+</div>
 
-        A terahertz time trace is not simply
-        “signal versus time.”
 
-        It is a direct measurement of the transient
-        electric field:
+<div class="control-group">
 
-        its amplitude,
-        sign,
-        timing,
-        oscillation,
-        reflections,
-        and noise.
+<div class="label-row">
 
-      </p>
+<label for="frequency">
+Characteristic frequency
+</label>
 
+<output id="frequencyValue"></output>
 
-      <div class="hero-actions">
+</div>
 
-        <a
-          class="button primary"
-          href="#simulator"
-        >
-          Start the live simulation
-        </a>
+<input
+id="frequency"
+type="range"
+min="0.10"
+max="2.50"
+value="0.80"
+step="0.05"
+>
 
-        <a
-          class="button secondary"
-          href="#experiment"
-        >
-          How THz-TDS measures it
-        </a>
+</div>
 
-      </div>
 
+<div class="control-group">
 
-      <div
-        class="concept-strip"
-        aria-label="Key ideas"
-      >
+<div class="label-row">
 
-        <span>
-          1 ps = 10⁻¹² s
-        </span>
+<label for="mainDelay">
+Main pulse delay
+</label>
 
-        <span>
-          Positive/negative = field direction
-        </span>
+<output id="mainDelayValue"></output>
 
-        <span>
-          FFT → frequency spectrum
-        </span>
+</div>
 
-      </div>
+<input
+id="mainDelay"
+type="range"
+min="-8.0"
+max="8.0"
+value="0.0"
+step="0.05"
+>
 
-    </div>
+<small>
+Translate the complete THz pulse in time.
+</small>
 
-  </header>
 
+<div class="delay-buttons">
 
-  <main>
+<button id="delayMinus">
+−0.25 ps
+</button>
 
+<button id="delayZero">
+Center
+</button>
 
-    <!-- =====================================================
-         SIMULATOR
-         ===================================================== -->
+<button id="delayPlus">
++0.25 ps
+</button>
 
-    <section
-      id="simulator"
-      class="section container"
-    >
+</div>
 
-      <div class="section-heading">
+</div>
 
-        <p class="eyebrow">
-          Live simulation
-        </p>
 
-        <h2>
-          Build and scan a THz pulse
-        </h2>
+<div class="control-group">
 
-        <p>
+<div class="label-row">
 
-          Change the pulse parameters and watch the
-          time-domain pulse, spectral amplitude, and
-          spectral phase update immediately.
+<label for="echo">
+Reflection amplitude
+</label>
 
-          Move the main THz pulse in time to directly
-          observe the change in Fourier phase slope.
+<output id="echoValue"></output>
 
-        </p>
+</div>
 
-      </div>
+<input
+id="echo"
+type="range"
+min="0"
+max="0.60"
+value="0.18"
+step="0.01"
+>
 
+<small>
+Relative amplitude of the reflected THz pulse.
+</small>
 
-      <div class="sim-layout">
+</div>
 
 
-        <!-- =================================================
-             CONTROLS
-             ================================================= -->
+<div class="control-group">
 
-        <aside
-          class="controls panel"
-          aria-label="Simulation controls"
-        >
+<div class="label-row">
 
+<label for="echoDelay">
+Reflection delay
+</label>
 
-          <div class="control-group">
+<output id="echoDelayValue"></output>
 
-            <label for="model">
-              Pulse model
-            </label>
+</div>
 
-            <select id="model">
+<input
+id="echoDelay"
+type="range"
+min="1.0"
+max="8.0"
+value="4.0"
+step="0.1"
+>
 
-              <option value="single">
-                Single-cycle THz transient
-              </option>
+<small>
+Temporal separation between the main pulse and reflection.
+</small>
 
-              <option value="carrier">
-                Gaussian-envelope carrier
-              </option>
+</div>
 
-            </select>
 
-          </div>
+<button
+id="resetButton"
+class="reset-button"
+>
+Reset
+</button>
 
 
-          <div class="control-group">
+</div>
 
-            <div class="label-row">
 
-              <label for="duration">
-                Pulse duration
-              </label>
+<!-- ===================================================== -->
+<!-- PLOTS -->
+<!-- ===================================================== -->
 
-              <output id="durationValue">
-              </output>
+<div>
 
-            </div>
 
-            <input
-              id="duration"
-              type="range"
-              min="0.20"
-              max="2.00"
-              value="0.70"
-              step="0.05"
-            />
+<div class="panel plot-card">
 
-            <small>
-              Controls how rapidly the transient changes in time.
-            </small>
+<h2>
+Time-domain THz electric field
+</h2>
 
-          </div>
+<p>
+Fixed time window: −10 ps to +10 ps.
+</p>
 
+<canvas
+id="timeCanvas"
+width="1000"
+height="430"
+></canvas>
 
-          <div class="control-group">
+</div>
 
-            <div class="label-row">
 
-              <label for="frequency">
-                Carrier / characteristic frequency
-              </label>
+<div class="frequency-grid">
 
-              <output id="frequencyValue">
-              </output>
 
-            </div>
+<div class="panel plot-card">
 
-            <input
-              id="frequency"
-              type="range"
-              min="0.10"
-              max="2.50"
-              value="0.80"
-              step="0.05"
-            />
+<h2>
+FFT amplitude
+</h2>
 
-            <small>
-              Higher frequency gives faster oscillation and a shorter period.
-            </small>
+<p>
+Normalized spectral amplitude.
+</p>
 
-          </div>
+<canvas
+id="amplitudeCanvas"
+width="620"
+height="400"
+></canvas>
 
+</div>
 
-          <div class="control-group">
 
-            <div class="label-row">
+<div class="panel plot-card">
 
-              <label for="chirp">
-                Chirp
-              </label>
+<h2>
+FFT phase
+</h2>
 
-              <output id="chirpValue">
-              </output>
+<p>
+Unwrapped phase referenced to zero at the first meaningful spectral frequency.
+</p>
 
-            </div>
+<canvas
+id="phaseCanvas"
+width="620"
+height="400"
+></canvas>
 
-            <input
-              id="chirp"
-              type="range"
-              min="-4.0"
-              max="4.0"
-              value="0.0"
-              step="0.1"
-            />
 
-            <small>
-              Changes the instantaneous frequency across the pulse.
-            </small>
+<div class="phase-info">
 
-          </div>
+Measured slope:
 
+<strong id="phaseSlope">
+—
+</strong>
 
-          <!-- MAIN PULSE TIME DELAY -->
+<br>
 
-          <div class="control-group">
+Expected shift contribution:
 
-            <div class="label-row">
+<strong id="expectedSlope">
+—
+</strong>
 
-              <label for="mainDelay">
-                Main-pulse time delay
-              </label>
+</div>
 
-              <output id="mainDelayValue">
-              </output>
+</div>
 
-            </div>
 
-            <input
-              id="mainDelay"
-              type="range"
-              min="-4.0"
-              max="8.0"
-              value="0.0"
-              step="0.05"
-            />
+</div>
 
-            <small>
-              Move the complete THz pulse in time and watch
-              the Fourier-phase slope change.
-            </small>
 
+<div class="metrics">
 
-            <div class="delay-actions">
 
-              <button
-                id="delayMinus"
-                class="button secondary"
-                type="button"
-              >
-                −0.25 ps
-              </button>
+<div class="metric">
 
-              <button
-                id="delayZero"
-                class="button secondary"
-                type="button"
-              >
-                Center
-              </button>
+<span>
+Applied main delay
+</span>
 
-              <button
-                id="delayPlus"
-                class="button secondary"
-                type="button"
-              >
-                +0.25 ps
-              </button>
+<strong id="delayMetric">
+—
+</strong>
 
-            </div>
+</div>
 
-          </div>
 
+<div class="metric">
 
-          <div class="control-group">
+<span>
+Main peak time
+</span>
 
-            <div class="label-row">
+<strong id="peakMetric">
+—
+</strong>
 
-              <label for="echo">
-                Reflection amplitude
-              </label>
+</div>
 
-              <output id="echoValue">
-              </output>
 
-            </div>
+<div class="metric">
 
-            <input
-              id="echo"
-              type="range"
-              min="0"
-              max="0.60"
-              value="0.18"
-              step="0.01"
-            />
+<span>
+Phase slope
+</span>
 
-            <small>
-              Adds a delayed echo, similar to an internal reflection.
-            </small>
+<strong id="slopeMetric">
+—
+</strong>
 
-          </div>
+</div>
 
 
-          <div class="control-group">
+<div class="metric">
 
-            <div class="label-row">
+<span>
+Delay from phase slope
+</span>
 
-              <label for="echoDelay">
-                Reflection delay
-              </label>
+<strong id="delayFromSlope">
+—
+</strong>
 
-              <output id="echoDelayValue">
-              </output>
+</div>
 
-            </div>
 
-            <input
-              id="echoDelay"
-              type="range"
-              min="1.0"
-              max="8.0"
-              value="4.0"
-              step="0.1"
-            />
+</div>
 
-          </div>
 
+</div>
 
-          <div class="control-group">
+</div>
 
-            <div class="label-row">
-
-              <label for="noise">
-                Noise level
-              </label>
-
-              <output id="noiseValue">
-              </output>
-
-            </div>
-
-            <input
-              id="noise"
-              type="range"
-              min="0"
-              max="0.20"
-              value="0.02"
-              step="0.005"
-            />
-
-          </div>
-
-
-          <div class="control-actions">
-
-            <button
-              id="scanButton"
-              class="button primary"
-              type="button"
-            >
-              Scan pulse
-            </button>
-
-            <button
-              id="resetButton"
-              class="button secondary"
-              type="button"
-            >
-              Reset
-            </button>
-
-          </div>
-
-        </aside>
-
-
-        <!-- =================================================
-             PLOTS
-             ================================================= -->
-
-        <div class="plots">
-
-
-          <!-- TIME DOMAIN -->
-
-          <article class="plot-card panel">
-
-            <div class="plot-title-row">
-
-              <div>
-
-                <h3>
-                  Electric field in the time domain
-                </h3>
-
-                <p>
-
-                  <em>E(t)</em> records both magnitude and
-                  direction of the THz electric field.
-
-                </p>
-
-              </div>
-
-
-              <span
-                id="scanReadout"
-                class="status-pill"
-              >
-                Scan idle
-              </span>
-
-            </div>
-
-
-            <canvas
-              id="timeCanvas"
-              width="960"
-              height="430"
-              aria-label="Time-domain THz electric field plot"
-            >
-            </canvas>
-
-
-            <div class="legend">
-
-              <span>
-
-                <i class="legend-line field">
-                </i>
-
-                Electric field E(t)
-
-              </span>
-
-
-              <span>
-
-                <i class="legend-line scan">
-                </i>
-
-                Time position
-
-              </span>
-
-            </div>
-
-          </article>
-
-
-          <!-- AMPLITUDE + PHASE -->
-
-          <div class="plot-grid">
-
-
-            <article class="plot-card panel">
-
-              <h3>
-                FFT amplitude
-              </h3>
-
-              <p>
-
-                The spectral amplitude remains essentially
-                unchanged for a pure temporal translation.
-
-              </p>
-
-              <canvas
-                id="amplitudeCanvas"
-                width="600"
-                height="360"
-                aria-label="THz FFT amplitude plot"
-              >
-              </canvas>
-
-            </article>
-
-
-            <article class="plot-card panel">
-
-              <h3>
-                FFT phase
-              </h3>
-
-              <p>
-
-                The unwrapped spectral phase develops a
-                linear slope as the pulse is shifted in time.
-
-              </p>
-
-
-              <canvas
-                id="phaseCanvas"
-                width="600"
-                height="360"
-                aria-label="THz FFT phase plot"
-              >
-              </canvas>
-
-
-              <div class="phase-note">
-
-                Measured phase slope:
-
-                <strong id="phaseSlope">
-                  —
-                </strong>
-
-                &nbsp; | &nbsp;
-
-                Expected pure-shift slope:
-
-                <strong id="expectedSlope">
-                  —
-                </strong>
-
-              </div>
-
-            </article>
-
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- ===================================================
-           METRICS
-           =================================================== -->
-
-      <div
-        class="metrics"
-        aria-label="Pulse metrics"
-      >
-
-
-        <article>
-
-          <span>
-            Applied delay
-          </span>
-
-          <strong id="delayMetric">
-            —
-          </strong>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            Main peak time
-          </span>
-
-          <strong id="peakTime">
-            —
-          </strong>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            Spectral peak
-          </span>
-
-          <strong id="spectralPeak">
-            —
-          </strong>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            Phase slope
-          </span>
-
-          <strong id="slopeMetric">
-            —
-          </strong>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            Delay from phase slope
-          </span>
-
-          <strong id="delayFromSlope">
-            —
-          </strong>
-
-        </article>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         WAVEFORM INFORMATION
-         ===================================================== -->
-
-    <section
-      id="meaning"
-      class="section section-alt"
-    >
-
-      <div class="container">
-
-        <div class="section-heading narrow">
-
-          <p class="eyebrow">
-            Reading the waveform
-          </p>
-
-          <h2>
-            What information is contained in a time-domain THz pulse?
-          </h2>
-
-        </div>
-
-
-        <div class="cards four">
-
-
-          <article class="info-card">
-
-            <span class="number">
-              01
-            </span>
-
-            <h3>
-              Arrival time
-            </h3>
-
-            <p>
-
-              The pulse position on the time axis tells when
-              the THz transient reaches the detector.
-
-              A material or waveguide can shift this
-              arrival time.
-
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <span class="number">
-              02
-            </span>
-
-            <h3>
-              Electric-field amplitude
-            </h3>
-
-            <p>
-
-              The vertical value is the instantaneous electric
-              field.
-
-              Larger amplitude generally indicates a stronger
-              detected THz field.
-
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <span class="number">
-              03
-            </span>
-
-            <h3>
-              Field polarity and phase
-            </h3>
-
-            <p>
-
-              Positive and negative lobes represent opposite
-              field directions.
-
-              Their exact shape carries phase information.
-
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <span class="number">
-              04
-            </span>
-
-            <h3>
-              Reflections and echoes
-            </h3>
-
-            <p>
-
-              Delayed smaller pulses can arise from
-              interfaces, substrates, windows, or
-              waveguide reflections.
-
-            </p>
-
-          </article>
-
-
-        </div>
-
-
-        <div class="comparison panel">
-
-          <div>
-
-            <p class="eyebrow">
-              Time shift and phase
-            </p>
-
-            <h3>
-              Why does moving the THz pulse change phase slope?
-            </h3>
-
-          </div>
-
-
-          <div class="comparison-grid">
-
-
-            <div>
-
-              <h4>
-                Time domain
-              </h4>
-
-              <p>
-
-                A temporal displacement changes the pulse
-                arrival time without necessarily changing
-                the pulse shape.
-
-              </p>
-
-            </div>
-
-
-            <div>
-
-              <h4>
-                Frequency domain
-              </h4>
-
-              <p>
-
-                A time shift produces a linear spectral
-                phase term proportional to frequency.
-
-              </p>
-
-            </div>
-
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         EXPERIMENT
-         ===================================================== -->
-
-    <section
-      id="experiment"
-      class="section container"
-    >
-
-      <div class="section-heading narrow">
-
-        <p class="eyebrow">
-          THz time-domain spectroscopy
-        </p>
-
-        <h2>
-          How the waveform is measured experimentally
-        </h2>
-
-        <p>
-
-          A THz-TDS system changes the relative delay between
-          the THz pulse and an ultrashort optical gate.
-
-          Each delay position measures one sample of the
-          electric field.
-
-          Repeating the process reconstructs the full waveform.
-
-        </p>
-
-      </div>
-
-
-      <div class="timeline">
-
-
-        <article>
-
-          <span>
-            1
-          </span>
-
-          <div>
-
-            <h3>
-              Generate
-            </h3>
-
-            <p>
-
-              A femtosecond laser excites a THz emitter and
-              produces a broadband transient.
-
-            </p>
-
-          </div>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            2
-          </span>
-
-          <div>
-
-            <h3>
-              Propagate
-            </h3>
-
-            <p>
-
-              The THz pulse travels through free space,
-              a sample, or a waveguide.
-
-            </p>
-
-          </div>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            3
-          </span>
-
-          <div>
-
-            <h3>
-              Sample in time
-            </h3>
-
-            <p>
-
-              An optical delay changes when the gate pulse
-              meets the THz field at the detector.
-
-            </p>
-
-          </div>
-
-        </article>
-
-
-        <article>
-
-          <span>
-            4
-          </span>
-
-          <div>
-
-            <h3>
-              Reconstruct
-            </h3>
-
-            <p>
-
-              The measured samples form E(t), and a Fourier
-              transform produces amplitude and phase versus
-              frequency.
-
-            </p>
-
-          </div>
-
-        </article>
-
-
-      </div>
-
-
-      <div class="equation panel">
-
-
-        <div>
-
-          <p class="eyebrow">
-            Time-to-frequency connection
-          </p>
-
-          <h3>
-            A time shift produces a linear spectral phase
-          </h3>
-
-        </div>
-
-
-        <p class="formula">
-
-          E(f) → E(f)e<sup>−i2πfτ</sup>
-
-        </p>
-
-
-        <p>
-
-          Therefore the additional phase caused by a temporal
-          shift τ is
-
-          Δφ(f) = −2πfτ,
-
-          and the phase slope is
-
-          dφ/df = −2πτ.
-
-        </p>
-
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         MAIN TAKEAWAY
-         ===================================================== -->
-
-    <section class="section">
-
-      <div class="container takeaway">
-
-        <p class="eyebrow">
-          Main takeaway
-        </p>
-
-        <h2>
-          Move the THz pulse and watch the Fourier phase rotate.
-        </h2>
-
-        <p>
-
-          A pure temporal translation changes the spectral phase
-          slope while leaving the spectral amplitude essentially
-          unchanged.
-
-        </p>
-
-        <a
-          class="button primary"
-          href="#simulator"
-        >
-          Experiment with the pulse again
-        </a>
-
-      </div>
-
-    </section>
-
-
-  </main>
-
-
-  <footer>
-
-    <div class="container footer-content">
-
-      <p>
-        Created by Deepak Kararwal for education and research communication.
-      </p>
-
-      <p>
-        Open-source under the MIT License.
-      </p>
-
-    </div>
-
-  </footer>
+</div>
 
 
 <script>
 
 (() => {
 
-  "use strict";
+"use strict";
 
 
-  /* =========================================================
-     DEFAULT VALUES
-     ========================================================= */
+/* =========================================================
+   PARAMETERS
+   ========================================================= */
 
-  const defaults = {
+const controls = {
 
-    model:
-      "single",
+  duration:
+    document.getElementById("duration"),
 
-    duration:
-      0.70,
+  frequency:
+    document.getElementById("frequency"),
 
-    frequency:
-      0.80,
+  mainDelay:
+    document.getElementById("mainDelay"),
 
-    chirp:
-      0.0,
+  echo:
+    document.getElementById("echo"),
 
-    mainDelay:
-      0.0,
+  echoDelay:
+    document.getElementById("echoDelay")
 
-    echo:
-      0.18,
+};
 
-    echoDelay:
-      4.0,
 
-    noise:
-      0.02
+const outputs = {
 
-  };
+  duration:
+    document.getElementById("durationValue"),
 
+  frequency:
+    document.getElementById("frequencyValue"),
 
-  /* =========================================================
-     CONTROLS
-     ========================================================= */
+  mainDelay:
+    document.getElementById("mainDelayValue"),
 
-  const controls = {
+  echo:
+    document.getElementById("echoValue"),
 
-    model:
-      document.getElementById(
-        "model"
-      ),
+  echoDelay:
+    document.getElementById("echoDelayValue")
 
-    duration:
-      document.getElementById(
-        "duration"
-      ),
+};
 
-    frequency:
-      document.getElementById(
-        "frequency"
-      ),
 
-    chirp:
-      document.getElementById(
-        "chirp"
-      ),
+const timeCanvas =
+  document.getElementById("timeCanvas");
 
-    mainDelay:
-      document.getElementById(
-        "mainDelay"
-      ),
 
-    echo:
-      document.getElementById(
-        "echo"
-      ),
+const amplitudeCanvas =
+  document.getElementById("amplitudeCanvas");
 
-    echoDelay:
-      document.getElementById(
-        "echoDelay"
-      ),
 
-    noise:
-      document.getElementById(
-        "noise"
-      )
+const phaseCanvas =
+  document.getElementById("phaseCanvas");
 
-  };
 
+const phaseSlopeReadout =
+  document.getElementById("phaseSlope");
 
-  const outputs = {
 
-    duration:
-      document.getElementById(
-        "durationValue"
-      ),
+const expectedSlopeReadout =
+  document.getElementById("expectedSlope");
 
-    frequency:
-      document.getElementById(
-        "frequencyValue"
-      ),
 
-    chirp:
-      document.getElementById(
-        "chirpValue"
-      ),
+const delayMetric =
+  document.getElementById("delayMetric");
 
-    mainDelay:
-      document.getElementById(
-        "mainDelayValue"
-      ),
 
-    echo:
-      document.getElementById(
-        "echoValue"
-      ),
+const peakMetric =
+  document.getElementById("peakMetric");
 
-    echoDelay:
-      document.getElementById(
-        "echoDelayValue"
-      ),
 
-    noise:
-      document.getElementById(
-        "noiseValue"
-      )
+const slopeMetric =
+  document.getElementById("slopeMetric");
 
-  };
 
+const delayFromSlope =
+  document.getElementById("delayFromSlope");
 
-  const canvases = {
 
-    time:
-      document.getElementById(
-        "timeCanvas"
-      ),
+/* =========================================================
+   TIME WINDOW
+   ========================================================= */
 
-    amplitude:
-      document.getElementById(
-        "amplitudeCanvas"
-      ),
+const N =
+  1024;
 
-    phase:
-      document.getElementById(
-        "phaseCanvas"
-      )
 
-  };
+const tMin =
+  -10;
 
 
-  const metrics = {
+const tMax =
+  10;
 
-    delayMetric:
-      document.getElementById(
-        "delayMetric"
-      ),
 
-    peakTime:
-      document.getElementById(
-        "peakTime"
-      ),
+const dt =
+  (tMax - tMin)
+  /
+  (N - 1);
 
-    spectralPeak:
-      document.getElementById(
-        "spectralPeak"
-      ),
 
-    slopeMetric:
-      document.getElementById(
-        "slopeMetric"
-      ),
+const time =
+  Array.from(
 
-    delayFromSlope:
-      document.getElementById(
-        "delayFromSlope"
-      )
+    { length: N },
 
-  };
+    (_, i) =>
+      tMin
+      +
+      i * dt
 
+  );
 
-  const phaseSlopeReadout =
-    document.getElementById(
-      "phaseSlope"
-    );
 
+const FMAX =
+  3.0;
 
-  const expectedSlopeReadout =
-    document.getElementById(
-      "expectedSlope"
-    );
 
+/*
+Only plot / fit phase where the FFT amplitude is significant.
+*/
 
-  const scanButton =
-    document.getElementById(
-      "scanButton"
-    );
+const PHASE_THRESHOLD =
+  0.08;
 
 
-  const resetButton =
-    document.getElementById(
-      "resetButton"
-    );
+/* =========================================================
+   SINGLE-CYCLE THz PULSE
+   ========================================================= */
 
+function pulseAt(
+  t,
+  p,
+  center
+) {
 
-  const delayMinus =
-    document.getElementById(
-      "delayMinus"
-    );
+  const x =
+    t
+    -
+    center;
 
 
-  const delayZero =
-    document.getElementById(
-      "delayZero"
-    );
-
-
-  const delayPlus =
-    document.getElementById(
-      "delayPlus"
-    );
-
-
-  const scanReadout =
-    document.getElementById(
-      "scanReadout"
-    );
-
-
-  /* =========================================================
-     TIME WINDOW
-
-     IMPORTANT:
-
-     Time window is fixed from
-
-     -10 ps to +10 ps
-     ========================================================= */
-
-  const N =
-    1024;
-
-
-  const tMin =
-    -10;
-
-
-  const tMax =
-    10;
-
-
-  const dt =
-    (tMax - tMin)
+  const sigma =
+    p.duration
     /
-    (N - 1);
-
-
-  const time =
-    Array.from(
-
-      {
-        length:
-          N
-      },
-
-      (_, i) =>
-        tMin
-        +
-        i * dt
-
-    );
-
-
-  /* =========================================================
-     FREQUENCY SETTINGS
-     ========================================================= */
-
-  const FMAX =
-    3.0;
-
-
-  const PHASE_THRESHOLD =
-    0.08;
-
-
-  let data =
-    null;
-
-
-  let scanning =
-    false;
-
-
-  let scanIndex =
-    0;
-
-
-  let animationFrame =
-    null;
-
-
-  /* =========================================================
-     NOISE
-     ========================================================= */
-
-  function seededNoise(
-    i,
-    amplitude
-  ) {
-
-    const x =
-      Math.sin(
-        i * 12.9898
-        +
-        78.233
-      )
+    (
+      2
       *
-      43758.5453;
-
-
-    return (
-      amplitude
-      *
-      (
+      Math.sqrt(
         2
         *
-        (
-          x
-          -
-          Math.floor(x)
-        )
-        -
-        1
+        Math.log(2)
       )
     );
 
-  }
 
+  const envelope =
+    Math.exp(
 
-  /* =========================================================
-     THz PULSE
-     ========================================================= */
-
-  function pulseAt(
-    t,
-    p,
-    center = 0
-  ) {
-
-    const x =
-      t
       -
-      center;
+      x * x
 
-
-    const sigma =
-      p.duration
       /
+
       (
         2
         *
-        Math.sqrt(
-          2
-          *
-          Math.log(2)
-        )
-      );
+        sigma
+        *
+        sigma
+      )
+
+    );
 
 
-    const envelope =
-      Math.exp(
-
-        -
-        (
-          x * x
-        )
-        /
-        (
-          2
-          *
-          sigma
-          *
-          sigma
-        )
-
-      );
+  const derivative =
+    -
+    (
+      x
+      /
+      sigma
+    )
+    *
+    envelope;
 
 
-    const phase =
+  /*
+  Small carrier component keeps the characteristic
+  frequency control physically intuitive.
+  */
+
+  const carrier =
+    0.25
+    *
+    envelope
+    *
+    Math.sin(
+
       2
       *
       Math.PI
@@ -2731,926 +770,889 @@ footer {
       *
       x
 
+    );
+
+
+  return (
+    1.18
+    *
+    derivative
+
+    +
+
+    carrier
+  );
+
+}
+
+
+/* =========================================================
+   READ CONTROLS
+   ========================================================= */
+
+function getParameters() {
+
+  return {
+
+    duration:
+      Number(
+        controls.duration.value
+      ),
+
+    frequency:
+      Number(
+        controls.frequency.value
+      ),
+
+    mainDelay:
+      Number(
+        controls.mainDelay.value
+      ),
+
+    echo:
+      Number(
+        controls.echo.value
+      ),
+
+    echoDelay:
+      Number(
+        controls.echoDelay.value
+      )
+
+  };
+
+}
+
+
+/* =========================================================
+   GENERATE SIGNAL
+   ========================================================= */
+
+function computeSignal() {
+
+  const p =
+    getParameters();
+
+
+  let field =
+    time.map(
+
+      t => {
+
+        const main =
+          pulseAt(
+
+            t,
+
+            p,
+
+            p.mainDelay
+
+          );
+
+
+        const reflection =
+          p.echo
+          *
+          pulseAt(
+
+            t,
+
+            p,
+
+            p.mainDelay
+            +
+            p.echoDelay
+
+          );
+
+
+        return (
+          main
+          +
+          reflection
+        );
+
+      }
+
+    );
+
+
+  const maxAbs =
+    Math.max(
+      ...field.map(
+        Math.abs
+      )
+    )
+    ||
+    1;
+
+
+  field =
+    field.map(
+
+      value =>
+        value
+        /
+        maxAbs
+
+    );
+
+
+  const spectrum =
+    computeSpectrum(
+      field
+    );
+
+
+  return {
+
+    p,
+
+    field,
+
+    spectrum
+
+  };
+
+}
+
+
+/* =========================================================
+   FFT
+   ========================================================= */
+
+function computeSpectrum(signal) {
+
+  const frequencies =
+    [];
+
+
+  const rawAmplitude =
+    [];
+
+
+  const rawPhase =
+    [];
+
+
+  for (
+    let k = 0;
+    k <= N / 2;
+    k++
+  ) {
+
+    let re =
+      0;
+
+
+    let im =
+      0;
+
+
+    for (
+      let n = 0;
+      n < N;
+      n++
+    ) {
+
+      const angle =
+
+        -2
+        *
+        Math.PI
+        *
+        k
+        *
+        n
+        /
+        N;
+
+
+      re +=
+
+        signal[n]
+
+        *
+
+        Math.cos(
+          angle
+        );
+
+
+      im +=
+
+        signal[n]
+
+        *
+
+        Math.sin(
+          angle
+        );
+
+    }
+
+
+    const frequency =
+
+      k
+
+      /
+
+      (
+        N
+        *
+        dt
+      );
+
+
+    frequencies.push(
+      frequency
+    );
+
+
+    rawAmplitude.push(
+
+      Math.hypot(
+        re,
+        im
+      )
+
+    );
+
+
+    rawPhase.push(
+
+      Math.atan2(
+        im,
+        re
+      )
+
+    );
+
+  }
+
+
+  /* =======================================================
+     NORMALIZE AMPLITUDE
+     ======================================================= */
+
+  const maximumAmplitude =
+    Math.max(
+      ...rawAmplitude
+    )
+    ||
+    1;
+
+
+  const amplitude =
+    rawAmplitude.map(
+
+      value =>
+        value
+        /
+        maximumAmplitude
+
+    );
+
+
+  /* =======================================================
+     UNWRAP PHASE
+     ======================================================= */
+
+  let phase =
+    unwrapPhase(
+      rawPhase
+    );
+
+
+  /* =======================================================
+     CORRECT NUMERICAL FFT TIME ORIGIN
+
+     The FFT treats array index n = 0 as t = 0.
+
+     However our actual first time sample is tMin = -10 ps.
+
+     Remove the artificial phase ramp produced by that
+     numerical origin.
+     ======================================================= */
+
+  phase =
+    phase.map(
+
+      (value, i) =>
+
+        value
+
+        +
+
+        2
+        *
+        Math.PI
+        *
+        frequencies[i]
+        *
+        tMin
+
+    );
+
+
+  /* =======================================================
+     PHASE MUST START FROM ZERO
+
+     Find first frequency having meaningful FFT amplitude.
+     Use that point as the phase reference.
+
+     This is better than referencing DC because a
+     single-cycle THz pulse has almost zero DC amplitude.
+     ======================================================= */
+
+  let referenceIndex =
+    -1;
+
+
+  for (
+    let i = 1;
+    i < frequencies.length;
+    i++
+  ) {
+
+    if (
+      frequencies[i]
+      >
+      FMAX
+    ) {
+
+      break;
+
+    }
+
+
+    if (
+      amplitude[i]
+      >=
+      PHASE_THRESHOLD
+    ) {
+
+      referenceIndex =
+        i;
+
+
+      break;
+
+    }
+
+  }
+
+
+  if (
+    referenceIndex
+    >=
+    0
+  ) {
+
+    const referencePhase =
+      phase[
+        referenceIndex
+      ];
+
+
+    phase =
+      phase.map(
+
+        value =>
+          value
+          -
+          referencePhase
+
+      );
+
+
+    phase[
+      referenceIndex
+    ] =
+      0;
+
+  }
+
+
+  /* =======================================================
+     LINEAR PHASE FIT
+     ======================================================= */
+
+  const fit =
+    fitPhaseSlope(
+
+      frequencies,
+
+      phase,
+
+      amplitude
+
+    );
+
+
+  return {
+
+    frequencies,
+
+    amplitude,
+
+    phase,
+
+    referenceIndex,
+
+    slope:
+      fit.slope,
+
+    intercept:
+      fit.intercept,
+
+    fitIndices:
+      fit.indices
+
+  };
+
+}
+
+
+/* =========================================================
+   PHASE UNWRAPPING
+   ========================================================= */
+
+function unwrapPhase(
+  phase
+) {
+
+  if (
+    phase.length
+    ===
+    0
+  ) {
+
+    return [];
+
+  }
+
+
+  const result =
+    [
+      phase[0]
+    ];
+
+
+  let offset =
+    0;
+
+
+  for (
+    let i = 1;
+    i < phase.length;
+    i++
+  ) {
+
+    const difference =
+
+      phase[i]
+
+      -
+
+      phase[
+        i - 1
+      ];
+
+
+    if (
+      difference
+      >
+      Math.PI
+    ) {
+
+      offset -=
+
+        2
+        *
+        Math.PI;
+
+    }
+
+
+    else if (
+      difference
+      <
+      -Math.PI
+    ) {
+
+      offset +=
+
+        2
+        *
+        Math.PI;
+
+    }
+
+
+    result.push(
+
+      phase[i]
+
       +
 
-      0.5
+      offset
+
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   PHASE SLOPE
+   ========================================================= */
+
+function fitPhaseSlope(
+  frequency,
+  phase,
+  amplitude
+) {
+
+  const indices =
+    [];
+
+
+  for (
+    let i = 1;
+    i < frequency.length;
+    i++
+  ) {
+
+    if (
+      frequency[i]
+      >
+      FMAX
+    ) {
+
+      break;
+
+    }
+
+
+    if (
+      amplitude[i]
+      >=
+      PHASE_THRESHOLD
+    ) {
+
+      indices.push(
+        i
+      );
+
+    }
+
+  }
+
+
+  if (
+    indices.length
+    <
+    2
+  ) {
+
+    return {
+
+      slope:
+        0,
+
+      intercept:
+        0,
+
+      indices:
+        []
+
+    };
+
+  }
+
+
+  let sw = 0;
+  let sx = 0;
+  let sy = 0;
+  let sxx = 0;
+  let sxy = 0;
+
+
+  for (
+    const i
+    of
+    indices
+  ) {
+
+    const weight =
+      amplitude[i]
       *
-      p.chirp
+      amplitude[i];
+
+
+    const x =
+      frequency[i];
+
+
+    const y =
+      phase[i];
+
+
+    sw +=
+      weight;
+
+
+    sx +=
+      weight
+      *
+      x;
+
+
+    sy +=
+      weight
+      *
+      y;
+
+
+    sxx +=
+      weight
       *
       x
       *
       x;
 
 
-    if (
-      p.model
-      ===
-      "carrier"
-    ) {
-
-      return (
-        envelope
-        *
-        Math.cos(
-          phase
-        )
-      );
-
-    }
-
-
-    const derivative =
-      -
-      (
-        x
-        /
-        sigma
-      )
+    sxy +=
+      weight
       *
-      envelope;
-
-
-    const carrierBlend =
-      0.25
+      x
       *
-      envelope
-      *
-      Math.sin(
-        phase
-      );
-
-
-    return (
-      1.18
-      *
-      derivative
-
-      +
-
-      carrierBlend
-    );
+      y;
 
   }
 
 
-  /* =========================================================
-     READ PARAMETERS
-     ========================================================= */
+  const denominator =
 
-  function getParameters() {
+    sw
+    *
+    sxx
 
-    return {
+    -
 
-      model:
-        controls.model.value,
-
-      duration:
-        Number(
-          controls.duration.value
-        ),
-
-      frequency:
-        Number(
-          controls.frequency.value
-        ),
-
-      chirp:
-        Number(
-          controls.chirp.value
-        ),
-
-      mainDelay:
-        Number(
-          controls.mainDelay.value
-        ),
-
-      echo:
-        Number(
-          controls.echo.value
-        ),
-
-      echoDelay:
-        Number(
-          controls.echoDelay.value
-        ),
-
-      noise:
-        Number(
-          controls.noise.value
-        )
-
-    };
-
-  }
+    sx
+    *
+    sx;
 
 
-  /* =========================================================
-     COMPUTE TIME SIGNAL
-     ========================================================= */
-
-  function computeSignal() {
-
-    const p =
-      getParameters();
-
-
-    let cleanField =
-      time.map(
-        t => {
-
-          const primary =
-            pulseAt(
-              t,
-              p,
-              p.mainDelay
-            );
-
-
-          const echo =
-            p.echo
-            *
-            pulseAt(
-
-              t,
-
-              p,
-
-              p.mainDelay
-              +
-              p.echoDelay
-
-            );
-
-
-          return (
-            primary
-            +
-            echo
-          );
-
-        }
-      );
-
-
-    const maxAbs =
-      Math.max(
-        ...cleanField.map(
-          Math.abs
-        )
-      )
-      ||
-      1;
-
-
-    cleanField =
-      cleanField.map(
-        v =>
-          v
-          /
-          maxAbs
-      );
-
-
-    const field =
-      cleanField.map(
-
-        (v, i) =>
-
-          v
-          +
-          seededNoise(
-            i,
-            p.noise
-          )
-
-      );
-
-
-    const spectrum =
-      computeSpectrum(
-        cleanField
-      );
-
-
-    return {
-
-      p,
-
-      field,
-
-      cleanField,
-
-      spectrum
-
-    };
-
-  }
-
-
-  /* =========================================================
-     FOURIER TRANSFORM
-     ========================================================= */
-
-  function computeSpectrum(
-    signal
+  if (
+    Math.abs(
+      denominator
+    )
+    <
+    1e-12
   ) {
 
-    const frequencies =
-      [];
-
-
-    const rawAmplitude =
-      [];
-
-
-    const rawPhase =
-      [];
-
-
-    for (
-      let k = 0;
-      k <= N / 2;
-      k++
-    ) {
-
-      let re =
-        0;
-
-
-      let im =
-        0;
-
-
-      for (
-        let n = 0;
-        n < N;
-        n++
-      ) {
-
-        const angle =
-          -
-          2
-          *
-          Math.PI
-          *
-          k
-          *
-          n
-          /
-          N;
-
-
-        re +=
-          signal[n]
-          *
-          Math.cos(
-            angle
-          );
-
-
-        im +=
-          signal[n]
-          *
-          Math.sin(
-            angle
-          );
-
-      }
-
-
-      const f =
-        k
-        /
-        (
-          N
-          *
-          dt
-        );
-
-
-      frequencies.push(
-        f
-      );
-
-
-      rawAmplitude.push(
-
-        Math.hypot(
-          re,
-          im
-        )
-
-      );
-
-
-      rawPhase.push(
-
-        Math.atan2(
-          im,
-          re
-        )
-
-      );
-
-    }
-
-
-    const maxAmp =
-      Math.max(
-        ...rawAmplitude
-      )
-      ||
-      1;
-
-
-    const amplitude =
-      rawAmplitude.map(
-
-        v =>
-          v
-          /
-          maxAmp
-
-      );
-
-
-    const phase =
-      unwrapPhase(
-        rawPhase
-      );
-
-
-    /*
-       Correct for the numerical record beginning
-       at t = -10 ps rather than t = 0 ps.
-
-       This removes the artificial phase ramp caused
-       only by the FFT array origin.
-
-       After this correction, changing mainDelay
-       produces the physically expected phase slope.
-    */
-
-    const correctedPhase =
-      phase.map(
-
-        (ph, i) =>
-
-          ph
-
-          +
-
-          2
-          *
-          Math.PI
-          *
-          frequencies[i]
-          *
-          tMin
-
-      );
-
-
-    const fit =
-      fitPhaseSlope(
-
-        frequencies,
-
-        correctedPhase,
-
-        amplitude
-
-      );
-
-
     return {
-
-      frequencies,
-
-      amplitude,
-
-      phase:
-        correctedPhase,
 
       slope:
-        fit.slope,
+        0,
 
       intercept:
-        fit.intercept,
+        0,
 
-      fitIndices:
-        fit.indices
+      indices
 
     };
 
   }
 
 
-  /* =========================================================
-     PHASE UNWRAPPING
-     ========================================================= */
+  const slope =
 
-  function unwrapPhase(
-    phases
-  ) {
-
-    if (
-      !phases.length
-    ) {
-
-      return [];
-
-    }
-
-
-    const out =
-      [
-        phases[0]
-      ];
-
-
-    let offset =
-      0;
-
-
-    for (
-      let i = 1;
-      i < phases.length;
-      i++
-    ) {
-
-      const delta =
-        phases[i]
-        -
-        phases[i - 1];
-
-
-      if (
-        delta
-        >
-        Math.PI
-      ) {
-
-        offset -=
-          2
-          *
-          Math.PI;
-
-      }
-
-
-      else if (
-        delta
-        <
-        -Math.PI
-      ) {
-
-        offset +=
-          2
-          *
-          Math.PI;
-
-      }
-
-
-      out.push(
-
-        phases[i]
-        +
-        offset
-
-      );
-
-    }
-
-
-    return out;
-
-  }
-
-
-  /* =========================================================
-     LINEAR PHASE FIT
-     ========================================================= */
-
-  function fitPhaseSlope(
-    freq,
-    phase,
-    amp
-  ) {
-
-    const indices =
-      [];
-
-
-    for (
-      let i = 1;
-      i < freq.length;
-      i++
-    ) {
-
-      if (
-        freq[i]
-        >
-        FMAX
-      ) {
-
-        break;
-
-      }
-
-
-      if (
-        amp[i]
-        >=
-        PHASE_THRESHOLD
-      ) {
-
-        indices.push(
-          i
-        );
-
-      }
-
-    }
-
-
-    if (
-      indices.length
-      <
-      2
-    ) {
-
-      return {
-
-        slope:
-          0,
-
-        intercept:
-          0,
-
-        indices:
-          []
-
-      };
-
-    }
-
-
-    let sw =
-      0;
-
-    let sx =
-      0;
-
-    let sy =
-      0;
-
-    let sxx =
-      0;
-
-    let sxy =
-      0;
-
-
-    for (
-      const i
-      of
-      indices
-    ) {
-
-      const w =
-        amp[i]
-        *
-        amp[i];
-
-
-      const x =
-        freq[i];
-
-
-      const y =
-        phase[i];
-
-
-      sw +=
-        w;
-
-
-      sx +=
-        w
-        *
-        x;
-
-
-      sy +=
-        w
-        *
-        y;
-
-
-      sxx +=
-        w
-        *
-        x
-        *
-        x;
-
-
-      sxy +=
-        w
-        *
-        x
-        *
-        y;
-
-    }
-
-
-    const den =
+    (
       sw
       *
-      sxx
+      sxy
 
       -
 
       sx
       *
-      sx;
+      sy
+    )
+
+    /
+
+    denominator;
 
 
-    if (
-      Math.abs(
-        den
-      )
-      <
-      1e-14
-    ) {
+  const intercept =
 
-      return {
+    (
+      sy
 
-        slope:
-          0,
+      -
 
-        intercept:
-          0,
+      slope
+      *
+      sx
+    )
 
-        indices
+    /
 
-      };
-
-    }
+    sw;
 
 
-    const slope =
-      (
-        sw
-        *
-        sxy
+  return {
 
-        -
+    slope,
 
-        sx
-        *
-        sy
-      )
-      /
-      den;
+    intercept,
+
+    indices
+
+  };
+
+}
 
 
-    const intercept =
-      (
-        sy
-        -
-        slope
-        *
-        sx
-      )
-      /
-      sw;
+/* =========================================================
+   AXES
+   ========================================================= */
+
+function drawAxes(
+  ctx,
+  width,
+  height,
+  xLabel,
+  yLabel,
+  xTicks,
+  yTicks,
+  xMap,
+  yMap
+) {
+
+  const pad = {
+
+    left:
+      95,
+
+    right:
+      25,
+
+    top:
+      24,
+
+    bottom:
+      78
+
+  };
 
 
-    return {
+  const plotWidth =
 
-      slope,
+    width
 
-      intercept,
+    -
 
-      indices
+    pad.left
 
-    };
+    -
 
-  }
+    pad.right;
 
 
-  /* =========================================================
-     DRAW AXES
-     ========================================================= */
+  const plotHeight =
 
-  function drawAxes(
-    ctx,
+    height
+
+    -
+
+    pad.top
+
+    -
+
+    pad.bottom;
+
+
+  ctx.clearRect(
+    0,
+    0,
     width,
-    height,
-    xLabel,
-    yLabel,
-    xTicks,
-    yTicks,
-    xMap,
-    yMap
+    height
+  );
+
+
+  ctx.fillStyle =
+    "#081524";
+
+
+  ctx.fillRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  /* Tick-label size */
+
+  ctx.font =
+    "17px Arial";
+
+
+  ctx.strokeStyle =
+    "rgba(255,255,255,0.10)";
+
+
+  ctx.fillStyle =
+    "#a8bbd0";
+
+
+  for (
+    const tick
+    of
+    xTicks
   ) {
 
-    const pad = {
+    const x =
+      xMap(
 
-      left:
-        82,
+        tick,
 
-      right:
-        24,
+        pad,
 
-      top:
-        20,
+        plotWidth
 
-      bottom:
-        64
-
-    };
+      );
 
 
-    const plotW =
-      width
-      -
-      pad.left
-      -
-      pad.right;
+    ctx.beginPath();
 
 
-    const plotH =
-      height
-      -
+    ctx.moveTo(
+      x,
       pad.top
-      -
-      pad.bottom;
-
-
-    ctx.clearRect(
-      0,
-      0,
-      width,
-      height
     );
 
 
-    ctx.fillStyle =
-      "#081524";
-
-
-    ctx.fillRect(
-      0,
-      0,
-      width,
-      height
+    ctx.lineTo(
+      x,
+      pad.top
+      +
+      plotHeight
     );
 
 
-    /* Larger plot text */
-
-    ctx.font =
-      "16px system-ui";
-
-
-    ctx.lineWidth =
-      1;
-
-
-    ctx.strokeStyle =
-      "rgba(255,255,255,0.08)";
-
-
-    ctx.fillStyle =
-      "#91a6c0";
-
-
-    xTicks.forEach(
-      value => {
-
-        const x =
-          xMap(
-            value,
-            pad,
-            plotW
-          );
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          x,
-          pad.top
-        );
-
-        ctx.lineTo(
-          x,
-          pad.top
-          +
-          plotH
-        );
-
-        ctx.stroke();
-
-
-        ctx.textAlign =
-          "center";
-
-
-        ctx.fillText(
-
-          formatTick(
-            value
-          ),
-
-          x,
-
-          height
-          -
-          30
-
-        );
-
-      }
-    );
-
-
-    yTicks.forEach(
-      value => {
-
-        const y =
-          yMap(
-            value,
-            pad,
-            plotH
-          );
-
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-          pad.left,
-          y
-        );
-
-        ctx.lineTo(
-          pad.left
-          +
-          plotW,
-          y
-        );
-
-        ctx.stroke();
-
-
-        ctx.textAlign =
-          "right";
-
-
-        ctx.fillText(
-
-          formatTick(
-            value
-          ),
-
-          pad.left
-          -
-          10,
-
-          y
-          +
-          4
-
-        );
-
-      }
-    );
-
-
-    ctx.strokeStyle =
-      "rgba(255,255,255,0.25)";
-
-
-    ctx.strokeRect(
-
-      pad.left,
-
-      pad.top,
-
-      plotW,
-
-      plotH
-
-    );
-
-
-    ctx.fillStyle =
-      "#a8bbd0";
+    ctx.stroke();
 
 
     ctx.textAlign =
@@ -3659,1035 +1661,986 @@ footer {
 
     ctx.fillText(
 
-      xLabel,
+      formatTick(
+        tick
+      ),
 
-      pad.left
-      +
-      plotW / 2,
+      x,
 
       height
       -
-      10
+      38
 
     );
 
+  }
 
-    ctx.save();
+
+  for (
+    const tick
+    of
+    yTicks
+  ) {
+
+    const y =
+      yMap(
+
+        tick,
+
+        pad,
+
+        plotHeight
+
+      );
 
 
-    ctx.translate(
+    ctx.beginPath();
 
-      16,
 
-      pad.top
+    ctx.moveTo(
+      pad.left,
+      y
+    );
+
+
+    ctx.lineTo(
+
+      pad.left
       +
-      plotH / 2
+      plotWidth,
+
+      y
 
     );
 
 
-    ctx.rotate(
-      -Math.PI / 2
-    );
+    ctx.stroke();
+
+
+    ctx.textAlign =
+      "right";
 
 
     ctx.fillText(
-      yLabel,
-      0,
-      0
-    );
 
+      formatTick(
+        tick
+      ),
 
-    ctx.restore();
+      pad.left
+      -
+      12,
 
-
-    return {
-
-      pad,
-
-      plotW,
-
-      plotH
-
-    };
-
-  }
-
-
-  /* =========================================================
-     FORMAT AXIS VALUES
-     ========================================================= */
-
-  function formatTick(
-    v
-  ) {
-
-    if (
-      Math.abs(v)
-      >=
-      100
-    ) {
-
-      return v.toFixed(
-        0
-      );
-
-    }
-
-
-    if (
-      Math.abs(v)
-      >=
-      10
-    ) {
-
-      return v.toFixed(
-        1
-      );
-
-    }
-
-
-    if (
-      Math.abs(v)
-      >=
-      1
-    ) {
-
-      return v.toFixed(
-        1
-      );
-
-    }
-
-
-    return v.toFixed(
-      2
-    );
-
-  }
-
-
-  /* =========================================================
-     DRAW CURVE
-     ========================================================= */
-
-  function drawLine(
-    ctx,
-    valuesX,
-    valuesY,
-    mapX,
-    mapY,
-    region,
-    color,
-    lineWidth = 2,
-    dash = [],
-    mask = null
-  ) {
-
-    ctx.save();
-
-
-    ctx.strokeStyle =
-      color;
-
-
-    ctx.lineWidth =
-      lineWidth;
-
-
-    ctx.setLineDash(
-      dash
-    );
-
-
-    ctx.beginPath();
-
-
-    let drawing =
-      false;
-
-
-    for (
-      let i = 0;
-      i < valuesX.length;
-      i++
-    ) {
-
-      if (
-        mask
-        &&
-        !mask(i)
-      ) {
-
-        drawing =
-          false;
-
-        continue;
-
-      }
-
-
-      const x =
-        mapX(
-
-          valuesX[i],
-
-          region.pad,
-
-          region.plotW
-
-        );
-
-
-      const y =
-        mapY(
-
-          valuesY[i],
-
-          region.pad,
-
-          region.plotH
-
-        );
-
-
-      if (
-        !drawing
-      ) {
-
-        ctx.moveTo(
-          x,
-          y
-        );
-
-        drawing =
-          true;
-
-      }
-
-
-      else {
-
-        ctx.lineTo(
-          x,
-          y
-        );
-
-      }
-
-    }
-
-
-    ctx.stroke();
-
-
-    ctx.restore();
-
-  }
-
-
-  /* =========================================================
-     TIME-DOMAIN PLOT
-     ========================================================= */
-
-  function drawTimePlot() {
-
-    const canvas =
-      canvases.time;
-
-
-    const ctx =
-      canvas.getContext(
-        "2d"
-      );
-
-
-    const xMap =
-      (
-        v,
-        p,
-        w
-      ) =>
-
-        p.left
-
-        +
-
-        (
-          v
-          -
-          tMin
-        )
-        /
-        (
-          tMax
-          -
-          tMin
-        )
-        *
-        w;
-
-
-    const yMap =
-      (
-        v,
-        p,
-        h
-      ) =>
-
-        p.top
-
-        +
-
-        (
-          1.15
-          -
-          v
-        )
-        /
-        2.3
-        *
-        h;
-
-
-    const region =
-      drawAxes(
-
-        ctx,
-
-        canvas.width,
-
-        canvas.height,
-
-        "Time delay (ps)",
-
-        "Normalized electric field",
-
-        [
-          -10,
-          -5,
-          0,
-          5,
-          10
-        ],
-
-        [
-          -1,
-          -0.5,
-          0,
-          0.5,
-          1
-        ],
-
-        xMap,
-
-        yMap
-
-      );
-
-
-    /* Zero field line */
-
-    ctx.strokeStyle =
-      "rgba(255,255,255,0.32)";
-
-
-    ctx.beginPath();
-
-
-    ctx.moveTo(
-
-      region.pad.left,
-
-      yMap(
-
-        0,
-
-        region.pad,
-
-        region.plotH
-
-      )
-
-    );
-
-
-    ctx.lineTo(
-
-      region.pad.left
+      y
       +
-      region.plotW,
-
-      yMap(
-
-        0,
-
-        region.pad,
-
-        region.plotH
-
-      )
+      5
 
     );
 
+  }
 
-    ctx.stroke();
+
+  ctx.strokeStyle =
+    "rgba(255,255,255,0.35)";
 
 
-    /* Electric field */
+  ctx.strokeRect(
 
-    drawLine(
+    pad.left,
 
-      ctx,
+    pad.top,
 
-      time,
+    plotWidth,
 
-      data.field,
+    plotHeight
 
-      xMap,
+  );
 
-      yMap,
 
-      region,
+  /* =======================================================
+     LARGE AXIS TITLES
+     ======================================================= */
 
-      "#63d3ff",
+  ctx.fillStyle =
+    "#eaf2ff";
 
-      2.2
 
+  ctx.font =
+    "bold 22px Arial";
+
+
+  ctx.textAlign =
+    "center";
+
+
+  ctx.fillText(
+
+    xLabel,
+
+    pad.left
+    +
+    plotWidth / 2,
+
+    height
+    -
+    8
+
+  );
+
+
+  ctx.save();
+
+
+  ctx.translate(
+
+    24,
+
+    pad.top
+    +
+    plotHeight / 2
+
+  );
+
+
+  ctx.rotate(
+    -Math.PI / 2
+  );
+
+
+  ctx.fillText(
+
+    yLabel,
+
+    0,
+
+    0
+
+  );
+
+
+  ctx.restore();
+
+
+  return {
+
+    pad,
+
+    plotWidth,
+
+    plotHeight
+
+  };
+
+}
+
+
+/* =========================================================
+   TICK FORMAT
+   ========================================================= */
+
+function formatTick(
+  value
+) {
+
+  if (
+    Math.abs(value)
+    >=
+    10
+  ) {
+
+    return value.toFixed(
+      1
     );
 
+  }
 
-    /*
-       Orange dashed line marks
-       the requested main pulse delay.
-    */
 
-    const delayX =
+  if (
+    Math.abs(value)
+    >=
+    1
+  ) {
+
+    return value.toFixed(
+      1
+    );
+
+  }
+
+
+  return value.toFixed(
+    2
+  );
+
+}
+
+
+/* =========================================================
+   DRAW LINE
+   ========================================================= */
+
+function drawLine(
+  ctx,
+  xValues,
+  yValues,
+  xMap,
+  yMap,
+  region,
+  color,
+  width = 2,
+  dash = [],
+  mask = null
+) {
+
+  ctx.save();
+
+
+  ctx.strokeStyle =
+    color;
+
+
+  ctx.lineWidth =
+    width;
+
+
+  ctx.setLineDash(
+    dash
+  );
+
+
+  ctx.beginPath();
+
+
+  let started =
+    false;
+
+
+  for (
+    let i = 0;
+    i < xValues.length;
+    i++
+  ) {
+
+    if (
+      mask
+      &&
+      !mask(i)
+    ) {
+
+      started =
+        false;
+
+
+      continue;
+
+    }
+
+
+    const x =
       xMap(
 
-        data.p.mainDelay,
+        xValues[i],
 
         region.pad,
 
-        region.plotW
+        region.plotWidth
 
       );
 
 
-    ctx.save();
+    const y =
+      yMap(
 
+        yValues[i],
 
-    ctx.strokeStyle =
-      "#ffbd6b";
+        region.pad,
 
+        region.plotHeight
 
-    ctx.lineWidth =
-      1.7;
+      );
 
-
-    ctx.setLineDash(
-      [
-        6,
-        5
-      ]
-    );
-
-
-    ctx.beginPath();
-
-
-    ctx.moveTo(
-
-      delayX,
-
-      region.pad.top
-
-    );
-
-
-    ctx.lineTo(
-
-      delayX,
-
-      region.pad.top
-      +
-      region.plotH
-
-    );
-
-
-    ctx.stroke();
-
-
-    ctx.restore();
-
-
-    /* Scan cursor */
 
     if (
-      scanning
-      ||
-      scanIndex > 0
+      !started
     ) {
 
-      const tx =
-        time[
-          scanIndex
-        ];
-
-
-      const fy =
-        data.field[
-          scanIndex
-        ];
-
-
-      const x =
-        xMap(
-
-          tx,
-
-          region.pad,
-
-          region.plotW
-
-        );
-
-
-      const y =
-        yMap(
-
-          fy,
-
-          region.pad,
-
-          region.plotH
-
-        );
-
-
-      ctx.strokeStyle =
-        "#ffbd6b";
-
-
-      ctx.lineWidth =
-        2;
-
-
-      ctx.beginPath();
-
-
       ctx.moveTo(
-
         x,
-
-        region.pad.top
-
+        y
       );
 
+
+      started =
+        true;
+
+    }
+
+
+    else {
 
       ctx.lineTo(
-
         x,
-
-        region.pad.top
-        +
-        region.plotH
-
+        y
       );
-
-
-      ctx.stroke();
-
-
-      ctx.fillStyle =
-        "#ffbd6b";
-
-
-      ctx.beginPath();
-
-
-      ctx.arc(
-
-        x,
-
-        y,
-
-        5,
-
-        0,
-
-        2
-        *
-        Math.PI
-
-      );
-
-
-      ctx.fill();
 
     }
 
   }
 
 
-  /* =========================================================
-     FFT AMPLITUDE
-     ========================================================= */
-
-  function drawAmplitudePlot() {
-
-    const canvas =
-      canvases.amplitude;
+  ctx.stroke();
 
 
-    const ctx =
-      canvas.getContext(
-        "2d"
-      );
+  ctx.restore();
+
+}
 
 
-    const xMap =
+/* =========================================================
+   TIME DOMAIN
+   ========================================================= */
+
+function drawTimePlot() {
+
+  const ctx =
+    timeCanvas.getContext(
+      "2d"
+    );
+
+
+  const xMap =
+    (
+      value,
+      pad,
+      width
+    ) =>
+
+      pad.left
+
+      +
+
       (
-        v,
-        p,
-        w
-      ) =>
+        value
+        -
+        tMin
+      )
 
-        p.left
-        +
-        v
-        /
-        FMAX
-        *
-        w;
+      /
 
-
-    const yMap =
       (
-        v,
-        p,
-        h
-      ) =>
+        tMax
+        -
+        tMin
+      )
 
-        p.top
+      *
 
-        +
-
-        (
-          1.05
-          -
-          v
-        )
-        /
-        1.05
-        *
-        h;
+      width;
 
 
-    const region =
-      drawAxes(
+  const yMap =
+    (
+      value,
+      pad,
+      height
+    ) =>
 
-        ctx,
+      pad.top
 
-        canvas.width,
+      +
 
-        canvas.height,
+      (
+        1.15
+        -
+        value
+      )
 
-        "Frequency (THz)",
+      /
 
-        "Normalized amplitude",
+      2.3
 
-        [
-          0,
-          0.5,
-          1,
-          1.5,
-          2,
-          2.5,
-          3
-        ],
+      *
 
-        [
-          0,
-          0.5,
-          1
-        ],
-
-        xMap,
-
-        yMap
-
-      );
+      height;
 
 
-    const countFound =
-      data.spectrum.frequencies.findIndex(
-
-        f =>
-          f
-          >
-          FMAX
-
-      );
-
-
-    const count =
-      countFound > 0
-      ?
-      countFound
-      :
-      data.spectrum.frequencies.length;
-
-
-    drawLine(
+  const region =
+    drawAxes(
 
       ctx,
 
-      data.spectrum.frequencies.slice(
-        0,
-        count
-      ),
+      timeCanvas.width,
 
-      data.spectrum.amplitude.slice(
+      timeCanvas.height,
+
+      "Time delay (ps)",
+
+      "Normalized electric field",
+
+      [
+        -10,
+        -5,
         0,
-        count
-      ),
+        5,
+        10
+      ],
+
+      [
+        -1,
+        -0.5,
+        0,
+        0.5,
+        1
+      ],
 
       xMap,
 
-      yMap,
-
-      region,
-
-      "#63d3ff",
-
-      2.2
+      yMap
 
     );
 
 
-    /*
-       Amplitude threshold used to decide
-       where phase is physically meaningful.
-    */
+  drawLine(
 
-    const thresholdY =
-      yMap(
+    ctx,
 
-        PHASE_THRESHOLD,
+    time,
 
-        region.pad,
+    data.field,
 
-        region.plotH
+    xMap,
 
+    yMap,
+
+    region,
+
+    "#63d3ff",
+
+    2.5
+
+  );
+
+
+  /* Main delay marker */
+
+  const markerX =
+
+    xMap(
+
+      data.p.mainDelay,
+
+      region.pad,
+
+      region.plotWidth
+
+    );
+
+
+  ctx.save();
+
+
+  ctx.strokeStyle =
+    "#ffbd6b";
+
+
+  ctx.lineWidth =
+    2;
+
+
+  ctx.setLineDash(
+    [
+      7,
+      6
+    ]
+  );
+
+
+  ctx.beginPath();
+
+
+  ctx.moveTo(
+
+    markerX,
+
+    region.pad.top
+
+  );
+
+
+  ctx.lineTo(
+
+    markerX,
+
+    region.pad.top
+    +
+    region.plotHeight
+
+  );
+
+
+  ctx.stroke();
+
+
+  ctx.restore();
+
+}
+
+
+/* =========================================================
+   FFT AMPLITUDE
+   ========================================================= */
+
+function drawAmplitudePlot() {
+
+  const ctx =
+    amplitudeCanvas.getContext(
+      "2d"
+    );
+
+
+  const xMap =
+    (
+      value,
+      pad,
+      width
+    ) =>
+
+      pad.left
+
+      +
+
+      value
+      /
+      FMAX
+      *
+      width;
+
+
+  const yMap =
+    (
+      value,
+      pad,
+      height
+    ) =>
+
+      pad.top
+
+      +
+
+      (
+        1.05
+        -
+        value
+      )
+
+      /
+
+      1.05
+
+      *
+
+      height;
+
+
+  const region =
+    drawAxes(
+
+      ctx,
+
+      amplitudeCanvas.width,
+
+      amplitudeCanvas.height,
+
+      "Frequency (THz)",
+
+      "Normalized amplitude",
+
+      [
+        0,
+        0.5,
+        1,
+        1.5,
+        2,
+        2.5,
+        3
+      ],
+
+      [
+        0,
+        0.5,
+        1
+      ],
+
+      xMap,
+
+      yMap
+
+    );
+
+
+  drawLine(
+
+    ctx,
+
+    data.spectrum.frequencies,
+
+    data.spectrum.amplitude,
+
+    xMap,
+
+    yMap,
+
+    region,
+
+    "#63d3ff",
+
+    2.5,
+
+    [],
+
+    i =>
+      data.spectrum.frequencies[i]
+      <=
+      FMAX
+
+  );
+
+}
+
+
+/* =========================================================
+   FFT PHASE
+   ========================================================= */
+
+function drawPhasePlot() {
+
+  const ctx =
+    phaseCanvas.getContext(
+      "2d"
+    );
+
+
+  const frequency =
+    data.spectrum.frequencies;
+
+
+  const phase =
+    data.spectrum.phase;
+
+
+  const amplitude =
+    data.spectrum.amplitude;
+
+
+  const validPhase =
+    [];
+
+
+  for (
+    let i = 1;
+    i < frequency.length;
+    i++
+  ) {
+
+    if (
+      frequency[i]
+      >
+      FMAX
+    ) {
+
+      break;
+
+    }
+
+
+    if (
+      amplitude[i]
+      >=
+      PHASE_THRESHOLD
+    ) {
+
+      validPhase.push(
+        phase[i]
       );
 
-
-    ctx.save();
-
-
-    ctx.strokeStyle =
-      "rgba(255,189,107,0.75)";
-
-
-    ctx.setLineDash(
-      [
-        5,
-        5
-      ]
-    );
-
-
-    ctx.beginPath();
-
-
-    ctx.moveTo(
-
-      region.pad.left,
-
-      thresholdY
-
-    );
-
-
-    ctx.lineTo(
-
-      region.pad.left
-      +
-      region.plotW,
-
-      thresholdY
-
-    );
-
-
-    ctx.stroke();
-
-
-    ctx.restore();
+    }
 
   }
 
 
-  /* =========================================================
-     FFT PHASE
-     ========================================================= */
+  let yMin =
+    validPhase.length
 
-  function drawPhasePlot() {
+    ?
 
-    const canvas =
-      canvases.phase;
+    Math.min(
+      ...validPhase
+    )
 
+    :
 
-    const ctx =
-      canvas.getContext(
-        "2d"
-      );
+    -Math.PI;
 
 
-    const f =
-      data.spectrum.frequencies;
+  let yMax =
+    validPhase.length
+
+    ?
+
+    Math.max(
+      ...validPhase
+    )
+
+    :
+
+    Math.PI;
 
 
-    const ph =
-      data.spectrum.phase;
-
-
-    const amp =
-      data.spectrum.amplitude;
-
-
-    const valid =
-      [];
-
-
-    for (
-      let i = 1;
-      i < f.length;
-      i++
-    ) {
-
-      if (
-        f[i]
-        >
-        FMAX
-      ) {
-
-        break;
-
-      }
-
-
-      if (
-
-        amp[i]
-        >=
-        PHASE_THRESHOLD
-
-        &&
-
-        Number.isFinite(
-          ph[i]
-        )
-
-      ) {
-
-        valid.push(
-          ph[i]
-        );
-
-      }
-
-    }
-
-
-    let yMin =
-      valid.length
-      ?
-      Math.min(
-        ...valid
-      )
-      :
-      -Math.PI;
-
-
-    let yMax =
-      valid.length
-      ?
-      Math.max(
-        ...valid
-      )
-      :
-      Math.PI;
-
-
-    if (
-      Math.abs(
-        yMax
-        -
-        yMin
-      )
-      <
-      1.0
-    ) {
-
-      const mid =
-        0.5
-        *
-        (
-          yMin
-          +
-          yMax
-        );
-
-
-      yMin =
-        mid
-        -
-        0.5;
-
-
-      yMax =
-        mid
-        +
-        0.5;
-
-    }
-
-
-    const margin =
-      0.10
-      *
-      (
-        yMax
-        -
-        yMin
-      );
-
+  if (
+    Math.abs(
+      yMax
+      -
+      yMin
+    )
+    <
+    1
+  ) {
 
     yMin -=
-      margin;
+      0.5;
 
 
     yMax +=
-      margin;
+      0.5;
+
+  }
 
 
-    const xMap =
+  const margin =
+
+    0.1
+
+    *
+
+    (
+      yMax
+      -
+      yMin
+    );
+
+
+  yMin -=
+    margin;
+
+
+  yMax +=
+    margin;
+
+
+  const xMap =
+    (
+      value,
+      pad,
+      width
+    ) =>
+
+      pad.left
+
+      +
+
+      value
+      /
+      FMAX
+      *
+      width;
+
+
+  const yMap =
+    (
+      value,
+      pad,
+      height
+    ) =>
+
+      pad.top
+
+      +
+
       (
-        v,
-        p,
-        w
-      ) =>
+        yMax
+        -
+        value
+      )
 
-        p.left
+      /
+
+      (
+        yMax
+        -
+        yMin
+      )
+
+      *
+
+      height;
+
+
+  const yTicks =
+    Array.from(
+
+      {
+        length:
+          5
+      },
+
+      (_, i) =>
+
+        yMin
+
         +
-        v
-        /
-        FMAX
+
+        i
+
         *
-        w;
 
-
-    const yMap =
-      (
-        v,
-        p,
-        h
-      ) =>
-
-        p.top
-
-        +
-
-        (
-          yMax
-          -
-          v
-        )
-        /
         (
           yMax
           -
           yMin
         )
-        *
-        h;
+
+        /
+
+        4
+
+    );
 
 
-    const yTicks =
-      Array.from(
+  const region =
+    drawAxes(
 
-        {
-          length:
-            5
-        },
+      ctx,
 
-        (_, i) =>
+      phaseCanvas.width,
 
-          yMin
+      phaseCanvas.height,
+
+      "Frequency (THz)",
+
+      "Unwrapped phase (rad)",
+
+      [
+        0,
+        0.5,
+        1,
+        1.5,
+        2,
+        2.5,
+        3
+      ],
+
+      yTicks,
+
+      xMap,
+
+      yMap
+
+    );
+
+
+  /* Measured phase */
+
+  drawLine(
+
+    ctx,
+
+    frequency,
+
+    phase,
+
+    xMap,
+
+    yMap,
+
+    region,
+
+    "#9f86ff",
+
+    2.5,
+
+    [],
+
+    i =>
+
+      frequency[i]
+      <=
+      FMAX
+
+      &&
+
+      amplitude[i]
+      >=
+      PHASE_THRESHOLD
+
+  );
+
+
+  /* Linear fit */
+
+  if (
+    data.spectrum.fitIndices.length
+    >
+    1
+  ) {
+
+    const first =
+
+      data.spectrum.fitIndices[
+        0
+      ];
+
+
+    const last =
+
+      data.spectrum.fitIndices[
+        data.spectrum.fitIndices.length
+        -
+        1
+      ];
+
+
+    const fitFrequency =
+
+      [
+        frequency[first],
+        frequency[last]
+      ];
+
+
+    const fitPhase =
+
+      fitFrequency.map(
+
+        f =>
+
+          data.spectrum.intercept
 
           +
 
-          i
+          data.spectrum.slope
           *
-          (
-            yMax
-            -
-            yMin
-          )
-          /
-          4
+          f
 
       );
 
-
-    const region =
-      drawAxes(
-
-        ctx,
-
-        canvas.width,
-
-        canvas.height,
-
-        "Frequency (THz)",
-
-        "Unwrapped phase (rad)",
-
-        [
-          0,
-          0.5,
-          1,
-          1.5,
-          2,
-          2.5,
-          3
-        ],
-
-        yTicks,
-
-        xMap,
-
-        yMap
-
-      );
-
-
-    /*
-       Purple curve = measured / calculated
-       unwrapped spectral phase.
-    */
 
     drawLine(
 
       ctx,
 
-      f,
+      fitFrequency,
 
-      ph,
+      fitPhase,
 
       xMap,
 
@@ -4695,835 +2648,447 @@ footer {
 
       region,
 
-      "#9f86ff",
+      "#ffbd6b",
 
-      2.2,
+      2.3,
 
-      [],
-
-      i =>
-
-        f[i]
-        <=
-        FMAX
-
-        &&
-
-        amp[i]
-        >=
-        PHASE_THRESHOLD
+      [
+        9,
+        6
+      ]
 
     );
-
-
-    /*
-       Orange dashed curve = linear fit
-       to the phase.
-
-       As pulse delay changes,
-       this line rotates.
-    */
-
-    if (
-      data.spectrum.fitIndices.length
-      >
-      1
-    ) {
-
-      const first =
-        data.spectrum.fitIndices[
-          0
-        ];
-
-
-      const last =
-        data.spectrum.fitIndices[
-          data.spectrum.fitIndices.length
-          -
-          1
-        ];
-
-
-      const fitF =
-        [
-          f[first],
-          f[last]
-        ];
-
-
-      const fitP =
-        fitF.map(
-
-          freq =>
-
-            data.spectrum.intercept
-
-            +
-
-            data.spectrum.slope
-            *
-            freq
-
-        );
-
-
-      drawLine(
-
-        ctx,
-
-        fitF,
-
-        fitP,
-
-        xMap,
-
-        yMap,
-
-        region,
-
-        "#ffbd6b",
-
-        2.0,
-
-        [
-          8,
-          6
-        ]
-
-      );
-
-    }
 
   }
 
-
-  /* =========================================================
-     METRICS
-     ========================================================= */
-
-  function updateMetrics() {
-
-    let peakIndex =
-      0;
+}
 
 
-    let peakAbs =
-      -Infinity;
+/* =========================================================
+   UPDATE NUMBERS
+   ========================================================= */
+
+function updateReadouts() {
+
+  outputs.duration.textContent =
+
+    Number(
+      controls.duration.value
+    ).toFixed(
+      2
+    )
+
+    +
+
+    " ps";
 
 
-    data.cleanField.forEach(
+  outputs.frequency.textContent =
 
-      (
-        v,
-        i
-      ) => {
+    Number(
+      controls.frequency.value
+    ).toFixed(
+      2
+    )
 
-        if (
-          Math.abs(v)
-          >
-          peakAbs
-        ) {
+    +
 
-          peakAbs =
-            Math.abs(v);
+    " THz";
 
 
-          peakIndex =
-            i;
+  outputs.mainDelay.textContent =
 
-        }
+    Number(
+      controls.mainDelay.value
+    ).toFixed(
+      2
+    )
 
-      }
+    +
 
-    );
-
-
-    const amps =
-      data.spectrum.amplitude;
-
-
-    let spectralPeakIdx =
-      1;
+    " ps";
 
 
-    for (
-      let i = 2;
-      i < amps.length;
-      i++
-    ) {
+  outputs.echo.textContent =
 
-      if (
-        data.spectrum.frequencies[i]
-        >
-        FMAX
-      ) {
+    Math.round(
 
-        break;
+      Number(
+        controls.echo.value
+      )
 
-      }
+      *
 
+      100
 
-      if (
-        amps[i]
-        >
-        amps[
-          spectralPeakIdx
-        ]
-      ) {
+    )
 
-        spectralPeakIdx =
-          i;
+    +
 
-      }
-
-    }
+    "%";
 
 
-    /*
-       slope unit:
+  outputs.echoDelay.textContent =
 
-       phase is radians
-       frequency is THz
+    Number(
+      controls.echoDelay.value
+    ).toFixed(
+      1
+    )
 
-       therefore:
-       slope = rad / THz
-    */
+    +
 
-    const slope =
-      data.spectrum.slope;
+    " ps";
 
-
-    /*
-       From
-
-       slope = -2π τ
-
-       with f in THz and time in ps:
-
-       τ = -slope / 2π
-    */
-
-    const equivalentDelay =
-      -
-      slope
-      /
-      (
-        2
-        *
-        Math.PI
-      );
+}
 
 
-    const expectedSlope =
-      -
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+function updateMetrics() {
+
+  const slope =
+    data.spectrum.slope;
+
+
+  const equivalentDelay =
+
+    -
+
+    slope
+
+    /
+
+    (
       2
       *
       Math.PI
-      *
-      data.p.mainDelay;
+    );
 
 
-    metrics.delayMetric.textContent =
+  const expectedSlope =
 
-      data.p.mainDelay.toFixed(
-        2
-      )
+    -
 
-      +
+    2
 
-      " ps";
+    *
 
+    Math.PI
 
-    metrics.peakTime.textContent =
+    *
 
-      time[
-        peakIndex
-      ].toFixed(
-        2
-      )
+    data.p.mainDelay;
 
-      +
 
-      " ps";
+  let peakIndex =
+    0;
 
 
-    metrics.spectralPeak.textContent =
+  let maximum =
+    0;
 
-      data.spectrum.frequencies[
-        spectralPeakIdx
-      ].toFixed(
-        2
-      )
 
-      +
+  data.field.forEach(
 
-      " THz";
+    (value, index) => {
 
+      if (
+        Math.abs(value)
+        >
+        maximum
+      ) {
 
-    metrics.slopeMetric.textContent =
+        maximum =
+          Math.abs(value);
 
-      slope.toFixed(
-        2
-      )
 
-      +
+        peakIndex =
+          index;
 
-      " rad/THz";
-
-
-    metrics.delayFromSlope.textContent =
-
-      equivalentDelay.toFixed(
-        2
-      )
-
-      +
-
-      " ps";
-
-
-    phaseSlopeReadout.textContent =
-
-      slope.toFixed(
-        2
-      )
-
-      +
-
-      " rad/THz";
-
-
-    expectedSlopeReadout.textContent =
-
-      expectedSlope.toFixed(
-        2
-      )
-
-      +
-
-      " rad/THz";
-
-  }
-
-
-  /* =========================================================
-     UPDATE CONTROL READOUTS
-     ========================================================= */
-
-  function updateReadouts() {
-
-    outputs.duration.textContent =
-
-      Number(
-        controls.duration.value
-      ).toFixed(
-        2
-      )
-
-      +
-
-      " ps";
-
-
-    outputs.frequency.textContent =
-
-      Number(
-        controls.frequency.value
-      ).toFixed(
-        2
-      )
-
-      +
-
-      " THz";
-
-
-    outputs.chirp.textContent =
-
-      Number(
-        controls.chirp.value
-      ).toFixed(
-        1
-      )
-
-      +
-
-      " rad/ps²";
-
-
-    outputs.mainDelay.textContent =
-
-      Number(
-        controls.mainDelay.value
-      ).toFixed(
-        2
-      )
-
-      +
-
-      " ps";
-
-
-    outputs.echo.textContent =
-
-      Math.round(
-
-        Number(
-          controls.echo.value
-        )
-        *
-        100
-
-      )
-
-      +
-
-      "%";
-
-
-    outputs.echoDelay.textContent =
-
-      Number(
-        controls.echoDelay.value
-      ).toFixed(
-        1
-      )
-
-      +
-
-      " ps";
-
-
-    outputs.noise.textContent =
-
-      Math.round(
-
-        Number(
-          controls.noise.value
-        )
-        *
-        100
-
-      )
-
-      +
-
-      "%";
-
-  }
-
-
-  /* =========================================================
-     RENDER
-     ========================================================= */
-
-  function render() {
-
-    updateReadouts();
-
-
-    data =
-      computeSignal();
-
-
-    drawTimePlot();
-
-
-    drawAmplitudePlot();
-
-
-    drawPhasePlot();
-
-
-    updateMetrics();
-
-  }
-
-
-  /* =========================================================
-     SCAN CONTROL
-     ========================================================= */
-
-  function stopScan() {
-
-    scanning =
-      false;
-
-
-    if (
-      animationFrame
-    ) {
-
-      cancelAnimationFrame(
-        animationFrame
-      );
+      }
 
     }
 
-
-    animationFrame =
-      null;
+  );
 
 
-    scanButton.textContent =
-      "Scan pulse";
+  delayMetric.textContent =
 
-  }
+    data.p.mainDelay.toFixed(
+      2
+    )
 
+    +
 
-  function animateScan() {
-
-    if (
-      !scanning
-    ) {
-
-      return;
-
-    }
+    " ps";
 
 
-    scanIndex +=
-      3;
+  peakMetric.textContent =
+
+    time[
+      peakIndex
+    ].toFixed(
+      2
+    )
+
+    +
+
+    " ps";
 
 
-    if (
-      scanIndex
-      >=
-      N - 1
-    ) {
+  slopeMetric.textContent =
 
-      scanIndex =
-        N - 1;
+    slope.toFixed(
+      2
+    )
 
+    +
 
-      stopScan();
+    " rad/THz";
 
 
-      scanReadout.textContent =
-        "Scan complete";
+  delayFromSlope.textContent =
+
+    equivalentDelay.toFixed(
+      2
+    )
+
+    +
+
+    " ps";
 
 
-      drawTimePlot();
+  phaseSlopeReadout.textContent =
+
+    slope.toFixed(
+      2
+    )
+
+    +
+
+    " rad/THz";
 
 
-      return;
+  expectedSlopeReadout.textContent =
 
-    }
+    expectedSlope.toFixed(
+      2
+    )
 
+    +
 
-    const t =
-      time[
-        scanIndex
-      ];
+    " rad/THz";
 
-
-    const e =
-      data.field[
-        scanIndex
-      ];
+}
 
 
-    scanReadout.textContent =
+/* =========================================================
+   RENDER
+   ========================================================= */
 
-      `t = ${t.toFixed(2)} ps, E = ${e.toFixed(2)}`;
-
-
-    drawTimePlot();
-
-
-    animationFrame =
-      requestAnimationFrame(
-        animateScan
-      );
-
-  }
+let data;
 
 
-  /* =========================================================
-     MOVE MAIN PULSE WITH BUTTONS
-     ========================================================= */
+function render() {
 
-  function nudgeDelay(
-    delta
-  ) {
-
-    stopScan();
+  updateReadouts();
 
 
-    const min =
-      Number(
-        controls.mainDelay.min
-      );
+  data =
+    computeSignal();
 
 
-    const max =
-      Number(
-        controls.mainDelay.max
-      );
+  drawTimePlot();
 
 
-    const current =
-      Number(
-        controls.mainDelay.value
-      );
+  drawAmplitudePlot();
 
 
-    const next =
-      Math.max(
+  drawPhasePlot();
 
-        min,
 
-        Math.min(
+  updateMetrics();
 
-          max,
+}
 
-          current
-          +
-          delta
 
-        )
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
-      );
+function changeDelay(
+  amount
+) {
 
+  const min =
+    Number(
+      controls.mainDelay.min
+    );
+
+
+  const max =
+    Number(
+      controls.mainDelay.max
+    );
+
+
+  let value =
+
+    Number(
+      controls.mainDelay.value
+    )
+
+    +
+
+    amount;
+
+
+  value =
+
+    Math.max(
+
+      min,
+
+      Math.min(
+        max,
+        value
+      )
+
+    );
+
+
+  controls.mainDelay.value =
+    value.toFixed(
+      2
+    );
+
+
+  render();
+
+}
+
+
+document
+.getElementById("delayMinus")
+.addEventListener(
+
+  "click",
+
+  () =>
+    changeDelay(
+      -0.25
+    )
+
+);
+
+
+document
+.getElementById("delayPlus")
+.addEventListener(
+
+  "click",
+
+  () =>
+    changeDelay(
+      0.25
+    )
+
+);
+
+
+document
+.getElementById("delayZero")
+.addEventListener(
+
+  "click",
+
+  () => {
 
     controls.mainDelay.value =
-      next.toFixed(
-        2
-      );
-
-
-    scanIndex =
       0;
-
-
-    scanReadout.textContent =
-
-      `Main pulse shifted to ${next.toFixed(2)} ps`;
 
 
     render();
 
   }
 
+);
 
-  /* =========================================================
-     BUTTON EVENTS
-     ========================================================= */
 
-  scanButton.addEventListener(
+document
+.getElementById("resetButton")
+.addEventListener(
 
-    "click",
+  "click",
 
-    () => {
+  () => {
 
-      if (
-        scanning
-      ) {
+    controls.duration.value =
+      0.70;
 
-        stopScan();
 
+    controls.frequency.value =
+      0.80;
 
-        scanReadout.textContent =
-          "Scan paused";
 
+    controls.mainDelay.value =
+      0;
 
-        return;
 
-      }
+    controls.echo.value =
+      0.18;
 
 
-      if (
-        scanIndex
-        >=
-        N - 1
-      ) {
+    controls.echoDelay.value =
+      4.0;
 
-        scanIndex =
-          0;
 
-      }
+    render();
 
+  }
 
-      scanning =
-        true;
+);
 
 
-      scanButton.textContent =
-        "Pause scan";
+/* =========================================================
+   SLIDERS
+   ========================================================= */
 
+Object
+.values(
+  controls
+)
+.forEach(
 
-      animationFrame =
-        requestAnimationFrame(
-          animateScan
-        );
+  control => {
 
-    }
+    control.addEventListener(
 
-  );
+      "input",
 
+      render
 
-  delayMinus.addEventListener(
+    );
 
-    "click",
+  }
 
-    () =>
-      nudgeDelay(
-        -0.25
-      )
+);
 
-  );
 
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
 
-  delayZero.addEventListener(
-
-    "click",
-
-    () => {
-
-      stopScan();
-
-
-      controls.mainDelay.value =
-        "0.00";
-
-
-      scanIndex =
-        0;
-
-
-      scanReadout.textContent =
-        "Main pulse centered at 0.00 ps";
-
-
-      render();
-
-    }
-
-  );
-
-
-  delayPlus.addEventListener(
-
-    "click",
-
-    () =>
-      nudgeDelay(
-        +0.25
-      )
-
-  );
-
-
-  resetButton.addEventListener(
-
-    "click",
-
-    () => {
-
-      stopScan();
-
-
-      Object.entries(
-        defaults
-      ).forEach(
-
-        (
-          [
-            key,
-            value
-          ]
-        ) => {
-
-          controls[
-            key
-          ].value =
-            value;
-
-        }
-
-      );
-
-
-      scanIndex =
-        0;
-
-
-      scanReadout.textContent =
-        "Scan idle";
-
-
-      render();
-
-    }
-
-  );
-
-
-  /* =========================================================
-     SLIDER EVENTS
-     ========================================================= */
-
-  Object.values(
-    controls
-  ).forEach(
-
-    control => {
-
-      control.addEventListener(
-
-        "input",
-
-        () => {
-
-          stopScan();
-
-
-          scanIndex =
-            0;
-
-
-          if (
-            control
-            ===
-            controls.mainDelay
-          ) {
-
-            scanReadout.textContent =
-
-              `Main pulse shifted to ${Number(control.value).toFixed(2)} ps`;
-
-          }
-
-
-          else {
-
-            scanReadout.textContent =
-              "Parameters updated";
-
-          }
-
-
-          render();
-
-        }
-
-      );
-
-    }
-
-  );
-
-
-  /* =========================================================
-     INITIAL DISPLAY
-     ========================================================= */
-
-  render();
+render();
 
 
 })();
 
 </script>
+
 
 </body>
 </html>
